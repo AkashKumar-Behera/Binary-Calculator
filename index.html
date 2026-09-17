@@ -1,410 +1,862 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Programmer / Multi-Base Calculator</title>
+  <title>Programmer Multi-Base & Binary Arithmetic Solver</title>
   <style>
+    :root {
+      --bg-main: #0f111a;
+      --bg-card: #1a1d2e;
+      --bg-input: #121420;
+      --accent: #7aa2f7;
+      --accent-hover: #89b4fa;
+      --text: #c0caf5;
+      --text-muted: #7982a9;
+      --success: #9ece6a;
+      --warning: #e0af68;
+      --danger: #f7768e;
+      --border: #292e42;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
     }
 
     body {
-      background: linear-gradient(135deg, #1e1e2f, #12121c);
-      color: #fff;
+      background: radial-gradient(circle at top right, #1f2335, #0f111a);
+      color: var(--text);
       min-height: 100vh;
       display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-    }
-
-    .calculator {
-      background: #252538;
-      border-radius: 16px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-      width: 100%;
-      max-width: 440px;
-      overflow: hidden;
-      border: 1px solid #3d3d5c;
-    }
-
-    .header {
-      padding: 16px 20px;
-      background: #1c1c2b;
-      font-size: 1.1rem;
-      font-weight: 600;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid #33334d;
-      color: #7aa2f7;
-    }
-
-    /* Live Multi-Base Display */
-    .conversions-panel {
-      padding: 12px 20px;
-      background: #191926;
-      display: flex;
       flex-direction: column;
-      gap: 6px;
-      border-bottom: 1px solid #33334d;
+      align-items: center;
+      padding: 24px 16px;
     }
 
-    .base-row {
+    .container {
+      width: 100%;
+      max-width: 900px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    header h1 {
+      font-size: 1.8rem;
+      color: #bb9af7;
+      margin-bottom: 6px;
+    }
+
+    header p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      background: #141724;
+      padding: 6px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      gap: 6px;
+      margin-bottom: 20px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 12px 16px;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 0.95rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .tab-btn.active {
+      background: var(--accent);
+      color: #1a1b26;
+      box-shadow: 0 4px 12px rgba(122, 162, 247, 0.3);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+      margin-bottom: 20px;
+    }
+
+    .card-title {
+      font-size: 1.15rem;
+      color: var(--accent);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Forms & Inputs */
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    input, select {
+      width: 100%;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      color: #fff;
+      font-size: 1rem;
+      font-family: 'Consolas', monospace;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input:focus, select:focus {
+      border-color: var(--accent);
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+    }
+
+    .btn-action {
+      background: var(--accent);
+      color: #1a1b26;
+      border: none;
+      padding: 12px 20px;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.2s;
+      width: 100%;
+      font-size: 1rem;
+    }
+
+    .btn-action:hover {
+      background: var(--accent-hover);
+    }
+
+    /* Live Converter Output Boxes */
+    .converter-outputs {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px;
+      margin-top: 16px;
+    }
+
+    .conv-box {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      position: relative;
+    }
+
+    .conv-box-header {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      font-size: 0.85rem;
-      cursor: pointer;
-      padding: 4px 8px;
-      border-radius: 6px;
-      transition: background 0.2s;
-    }
-
-    .base-row:hover {
-      background: #2c2c44;
-    }
-
-    .base-row.active {
-      background: #363654;
-      border-left: 3px solid #7aa2f7;
-    }
-
-    .base-label {
-      color: #9aa5ce;
+      margin-bottom: 6px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
       font-weight: 600;
-      width: 45px;
     }
 
-    .base-val {
+    .conv-box-val {
       font-family: 'Consolas', monospace;
-      color: #e0af68;
+      font-size: 1.15rem;
+      color: var(--warning);
       word-break: break-all;
-      text-align: right;
     }
 
-    /* Primary Screen */
-    .display {
-      padding: 18px 20px;
-      background: #14141f;
-      text-align: right;
+    /* Step-by-Step Solution Viewer */
+    .solution-box {
+      background: #131520;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 20px;
+      display: none;
     }
 
-    .expression {
-      min-height: 20px;
+    .step {
+      margin-bottom: 16px;
+      padding-bottom: 16px;
+      border-bottom: 1px dashed #292e42;
+    }
+
+    .step:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .step-num {
+      color: #bb9af7;
+      font-weight: bold;
       font-size: 0.95rem;
-      color: #7982a9;
-      font-family: 'Consolas', monospace;
-      word-wrap: break-word;
+      margin-bottom: 4px;
     }
 
-    .current-val {
+    .step-desc {
+      color: var(--text);
+      font-size: 0.95rem;
+      margin-bottom: 8px;
+    }
+
+    .code-preview {
+      background: #090a10;
+      border-left: 3px solid var(--accent);
+      padding: 10px 14px;
+      font-family: 'Consolas', monospace;
+      color: #7dcfff;
+      border-radius: 4px;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      white-space: pre-wrap;
+    }
+
+    .tag-badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .badge-ok { background: #9ece6a22; color: var(--success); border: 1px solid #9ece6a66; }
+    .badge-warn { background: #f7768e22; color: var(--danger); border: 1px solid #f7768e66; }
+
+    /* Calculator UI */
+    .calc-wrapper {
+      max-width: 440px;
+      margin: 0 auto;
+    }
+
+    .calc-screen {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+      text-align: right;
+      margin-bottom: 14px;
+    }
+
+    .calc-expr {
+      min-height: 20px;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      font-family: 'Consolas', monospace;
+    }
+
+    .calc-val {
       font-size: 2rem;
       font-weight: bold;
-      color: #f7768e;
+      color: var(--danger);
       font-family: 'Consolas', monospace;
       margin-top: 4px;
-      overflow-x: auto;
-      white-space: nowrap;
+      word-break: break-all;
     }
 
-    /* Keypad Grid */
     .keypad {
-      padding: 16px;
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 10px;
     }
 
-    button {
-      background: #2f2f48;
-      color: #c0caf5;
-      border: 1px solid #3d3d60;
+    .btn-key {
+      background: #25283d;
+      color: var(--text);
+      border: 1px solid var(--border);
       border-radius: 8px;
       padding: 14px 0;
       font-size: 1.1rem;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.15s ease;
-      user-select: none;
     }
 
-    button:hover:not(:disabled) {
-      background: #3e3e60;
+    .btn-key:hover:not(:disabled) {
+      background: #363a56;
       color: #fff;
     }
 
-    button:active:not(:disabled) {
-      transform: scale(0.96);
-    }
-
-    button:disabled {
-      background: #1f1f2e;
-      color: #4a4a68;
-      border-color: #27273a;
+    .btn-key:disabled {
+      background: #171824;
+      color: #3f435c;
+      border-color: #1c1e2d;
       cursor: not-allowed;
     }
 
-    .btn-op {
-      background: #3b4261;
-      color: #7dcfff;
-    }
+    .btn-op { background: #333a59; color: #7dcfff; }
+    .btn-clear { background: #f7768e22; color: var(--danger); border-color: #f7768e55; }
+    .btn-eq { background: var(--accent); color: #1a1b26; font-weight: bold; }
 
-    .btn-op:hover:not(:disabled) {
-      background: #4a547a;
-    }
-
-    .btn-clear {
-      background: #f7768e22;
-      color: #f7768e;
-      border-color: #f7768e55;
-    }
-
-    .btn-clear:hover {
-      background: #f7768e44;
-    }
-
-    .btn-equals {
-      background: #7aa2f7;
-      color: #1a1b26;
-      font-weight: bold;
-    }
-
-    .btn-equals:hover {
-      background: #89b4fa;
+    @media(max-width: 600px) {
+      .grid-2 { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
 
-  <div class="calculator">
-    <div class="header">
-      <span>🔢 Multi-Base Calculator</span>
-      <span id="active-mode-tag" style="font-size: 0.8rem; background: #7aa2f722; color: #7aa2f7; padding: 2px 8px; border-radius: 4px;">MODE: BIN</span>
+  <div class="container">
+    <header>
+      <h1>🧮 Digital Logic & Multi-Base Solver</h1>
+      <p>Convert Base (Dec/Bin/Oct/Hex) & Solve 1's/2's Complement Addition/Subtraction with Full Steps</p>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('arithmetic')">
+        <span>📝</span> 1's & 2's Complement Solver
+      </button>
+      <button class="tab-btn" onclick="switchTab('converter')">
+        <span>🔄</span> Base Converter
+      </button>
+      <button class="tab-btn" onclick="switchTab('calc')">
+        <span>🔢</span> Programmer Keypad
+      </button>
     </div>
 
-    <!-- Live Base Previews (Click any to switch active input mode) -->
-    <div class="conversions-panel">
-      <div class="base-row" id="row-HEX" onclick="setBase(16)">
-        <span class="base-label">HEX</span>
-        <span class="base-val" id="hex-val">0</span>
-      </div>
-      <div class="base-row" id="row-DEC" onclick="setBase(10)">
-        <span class="base-label">DEC</span>
-        <span class="base-val" id="dec-val">0</span>
-      </div>
-      <div class="base-row" id="row-OCT" onclick="setBase(8)">
-        <span class="base-label">OCT</span>
-        <span class="base-val" id="oct-val">0</span>
-      </div>
-      <div class="base-row active" id="row-BIN" onclick="setBase(2)">
-        <span class="base-label">BIN</span>
-        <span class="base-val" id="bin-val">0</span>
+    <!-- TAB 1: Step-by-Step Complement Arithmetic Solver -->
+    <div id="tab-arithmetic" class="tab-content active">
+      <div class="card">
+        <div class="card-title">Solve Signed Binary Arithmetic (Jaise Exam/Notebook Questions)</div>
+        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 14px;">
+          Example: <code>(-6) + (-2) using 4 bits</code>, <code>(-5) + 2 using 4 bits</code>, ya <code>6 - 3</code>
+        </p>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Number 1 (Decimal e.g., -6, 5)</label>
+            <input type="number" id="num1" value="-6">
+          </div>
+          <div class="form-group">
+            <label>Number 2 (Decimal e.g., -2, 2)</label>
+            <input type="number" id="num2" value="-2">
+          </div>
+        </div>
+
+        <div class="grid-3">
+          <div class="form-group">
+            <label>Operation</label>
+            <select id="arith-op">
+              <option value="+">Addition (+)</option>
+              <option value="-">Subtraction (-)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Method</label>
+            <select id="arith-method">
+              <option value="2s">2's Complement (Most Common)</option>
+              <option value="1s">1's Complement (End-around carry)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Bit Length (Word Size)</label>
+            <select id="bit-length">
+              <option value="4" selected>4 Bits (Range: -8 to +7)</option>
+              <option value="8">8 Bits (Range: -128 to +127)</option>
+              <option value="16">16 Bits</option>
+            </select>
+          </div>
+        </div>
+
+        <button class="btn-action" onclick="solveArithmetic()">⚡ Step-by-Step Solve Karo</button>
+
+        <!-- Solution Container -->
+        <div id="arith-solution" class="solution-box">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <h3 style="color: #7aa2f7;">Detailed Step-by-Step Solution</h3>
+            <span id="overflow-badge"></span>
+          </div>
+          <div id="steps-container"></div>
+        </div>
       </div>
     </div>
 
-    <!-- Main Calculation Screens -->
-    <div class="display">
-      <div class="expression" id="expr"></div>
-      <div class="current-val" id="display">0</div>
+    <!-- TAB 2: Multi-Base Converter -->
+    <div id="tab-converter" class="tab-content">
+      <div class="card">
+        <div class="card-title">Universal Base Converter (Dec, Bin, Oct, Hex)</div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Input Number</label>
+            <input type="text" id="conv-input" value="42" oninput="convertBases()">
+          </div>
+          <div class="form-group">
+            <label>From Base</label>
+            <select id="conv-from-base" onchange="convertBases()">
+              <option value="10" selected>Decimal (Base 10)</option>
+              <option value="2">Binary (Base 2)</option>
+              <option value="8">Octal (Base 8)</option>
+              <option value="16">Hexadecimal (Base 16)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Live Conversion Results -->
+        <div class="converter-outputs">
+          <div class="conv-box">
+            <div class="conv-box-header">
+              <span>BINARY (BASE 2)</span>
+              <button onclick="copyToClipboard('conv-bin')" style="background:none;border:none;color:var(--accent);cursor:pointer;">Copy</button>
+            </div>
+            <div class="conv-box-val" id="conv-bin">101010</div>
+          </div>
+
+          <div class="conv-box">
+            <div class="conv-box-header">
+              <span>OCTAL (BASE 8)</span>
+              <button onclick="copyToClipboard('conv-oct')" style="background:none;border:none;color:var(--accent);cursor:pointer;">Copy</button>
+            </div>
+            <div class="conv-box-val" id="conv-oct">52</div>
+          </div>
+
+          <div class="conv-box">
+            <div class="conv-box-header">
+              <span>DECIMAL (BASE 10)</span>
+              <button onclick="copyToClipboard('conv-dec')" style="background:none;border:none;color:var(--accent);cursor:pointer;">Copy</button>
+            </div>
+            <div class="conv-box-val" id="conv-dec">42</div>
+          </div>
+
+          <div class="conv-box">
+            <div class="conv-box-header">
+              <span>HEXADECIMAL (BASE 16)</span>
+              <button onclick="copyToClipboard('conv-hex')" style="background:none;border:none;color:var(--accent);cursor:pointer;">Copy</button>
+            </div>
+            <div class="conv-box-val" id="conv-hex">2A</div>
+          </div>
+        </div>
+
+        <div style="margin-top: 18px;" class="card">
+          <h4 style="color: var(--text-muted); margin-bottom: 10px; font-size: 0.9rem;">Sign Representations (For 8-bit & 16-bit):</h4>
+          <div class="grid-2">
+            <div>
+              <span style="font-size: 0.85rem; color: var(--text-muted);">8-bit 1's Complement:</span>
+              <div id="rep-1s-8" class="code-preview" style="margin-top:4px;">-</div>
+            </div>
+            <div>
+              <span style="font-size: 0.85rem; color: var(--text-muted);">8-bit 2's Complement:</span>
+              <div id="rep-2s-8" class="code-preview" style="margin-top:4px;">-</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- Buttons -->
-    <div class="keypad">
-      <!-- Row 1: Hex keys A, B & AC, DEL -->
-      <button class="btn-hex" onclick="inputDigit('A')">A</button>
-      <button class="btn-hex" onclick="inputDigit('B')">B</button>
-      <button class="btn-clear" onclick="clearAll()">AC</button>
-      <button class="btn-clear" onclick="deleteLast()">DEL</button>
+    <!-- TAB 3: Programmer Keypad Calculator -->
+    <div id="tab-calc" class="tab-content">
+      <div class="calc-wrapper">
+        <div class="card">
+          <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <span style="font-size: 0.85rem; color: var(--text-muted);">CURRENT BASE:</span>
+            <select id="calc-base-select" style="width: auto; padding: 4px 10px;" onchange="changeCalcBase(Number(this.value))">
+              <option value="2" selected>Binary (BIN)</option>
+              <option value="8">Octal (OCT)</option>
+              <option value="10">Decimal (DEC)</option>
+              <option value="16">Hexadecimal (HEX)</option>
+            </select>
+          </div>
 
-      <!-- Row 2: Hex C, D, E, F -->
-      <button class="btn-hex" onclick="inputDigit('C')">C</button>
-      <button class="btn-hex" onclick="inputDigit('D')">D</button>
-      <button class="btn-hex" onclick="inputDigit('E')">E</button>
-      <button class="btn-hex" onclick="inputDigit('F')">F</button>
+          <div class="calc-screen">
+            <div class="calc-expr" id="calc-expr"></div>
+            <div class="calc-val" id="calc-display">0</div>
+          </div>
 
-      <!-- Row 3: Digits 7, 8, 9 & Divide -->
-      <button class="btn-oct" onclick="inputDigit('7')">7</button>
-      <button class="btn-dec" onclick="inputDigit('8')">8</button>
-      <button class="btn-dec" onclick="inputDigit('9')">9</button>
-      <button class="btn-op" onclick="chooseOperator('/')">÷</button>
+          <!-- Buttons -->
+          <div class="keypad">
+            <button class="btn-key btn-hex" onclick="calcInput('A')">A</button>
+            <button class="btn-key btn-hex" onclick="calcInput('B')">B</button>
+            <button class="btn-key btn-clear" onclick="calcClear()">AC</button>
+            <button class="btn-key btn-clear" onclick="calcDel()">DEL</button>
 
-      <!-- Row 4: Digits 4, 5, 6 & Multiply -->
-      <button class="btn-oct" onclick="inputDigit('4')">4</button>
-      <button class="btn-oct" onclick="inputDigit('5')">5</button>
-      <button class="btn-oct" onclick="inputDigit('6')">6</button>
-      <button class="btn-op" onclick="chooseOperator('*')">×</button>
+            <button class="btn-key btn-hex" onclick="calcInput('C')">C</button>
+            <button class="btn-key btn-hex" onclick="calcInput('D')">D</button>
+            <button class="btn-key btn-hex" onclick="calcInput('E')">E</button>
+            <button class="btn-key btn-hex" onclick="calcInput('F')">F</button>
 
-      <!-- Row 5: Digits 1, 2, 3 & Minus -->
-      <button class="btn-bin" onclick="inputDigit('1')">1</button>
-      <button class="btn-oct" onclick="inputDigit('2')">2</button>
-      <button class="btn-oct" onclick="inputDigit('3')">3</button>
-      <button class="btn-op" onclick="chooseOperator('-')">−</button>
+            <button class="btn-key btn-oct" onclick="calcInput('7')">7</button>
+            <button class="btn-key btn-dec" onclick="calcInput('8')">8</button>
+            <button class="btn-key btn-dec" onclick="calcInput('9')">9</button>
+            <button class="btn-key btn-op" onclick="calcOp('/')">÷</button>
 
-      <!-- Row 6: 0, Sign Toggle, Plus, Equals -->
-      <button class="btn-bin" onclick="inputDigit('0')">0</button>
-      <button class="btn-op" onclick="toggleSign()">±</button>
-      <button class="btn-op" onclick="chooseOperator('+')">+</button>
-      <button class="btn-equals" onclick="compute()">=</button>
+            <button class="btn-key btn-oct" onclick="calcInput('4')">4</button>
+            <button class="btn-key btn-oct" onclick="calcInput('5')">5</button>
+            <button class="btn-key btn-oct" onclick="calcInput('6')">6</button>
+            <button class="btn-key btn-op" onclick="calcOp('*')">×</button>
+
+            <button class="btn-key btn-bin" onclick="calcInput('1')">1</button>
+            <button class="btn-key btn-oct" onclick="calcInput('2')">2</button>
+            <button class="btn-key btn-oct" onclick="calcInput('3')">3</button>
+            <button class="btn-key btn-op" onclick="calcOp('-')">−</button>
+
+            <button class="btn-key btn-bin" onclick="calcInput('0')">0</button>
+            <button class="btn-key btn-op" onclick="calcToggleSign()">±</button>
+            <button class="btn-key btn-op" onclick="calcOp('+')">+</button>
+            <button class="btn-key btn-eq" onclick="calcCompute()">=</button>
+          </div>
+        </div>
+      </div>
     </div>
+
   </div>
 
   <script>
-    let currentBase = 2; // Default Binary mode
-    let currentInput = "0";
-    let previousValue = null;
-    let operator = null;
-    let shouldResetInput = false;
+    // Tab Switching
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
 
-    const baseNames = { 2: 'BIN', 8: 'OCT', 10: 'DEC', 16: 'HEX' };
+      event.currentTarget.classList.add('active');
+      document.getElementById('tab-' + tabId).classList.add('active');
+    }
 
-    function updateDisplay() {
-      const displayElem = document.getElementById('display');
-      displayElem.textContent = currentInput || "0";
+    // --- 1's & 2's Complement Helper Functions ---
+    function toUnsignedBinary(num, bits) {
+      let b = (num >>> 0).toString(2);
+      if (b.length > bits) return b.slice(-bits);
+      return b.padStart(bits, '0');
+    }
 
-      // Convert current input to decimal representation for live conversions
-      let decVal = 0;
-      try {
-        if (currentInput && currentInput !== "-") {
-          decVal = parseInt(currentInput, currentBase) || 0;
+    function invertBits(binStr) {
+      return binStr.split('').map(bit => bit === '1' ? '0' : '1').join('');
+    }
+
+    function addBinaryStrings(b1, b2) {
+      let carry = 0;
+      let result = [];
+      let carries = [];
+      for (let i = b1.length - 1; i >= 0; i--) {
+        const bit1 = parseInt(b1[i], 10);
+        const bit2 = parseInt(b2[i], 10);
+        const sum = bit1 + bit2 + carry;
+        result.unshift(sum % 2);
+        carries.unshift(carry);
+        carry = Math.floor(sum / 2);
+      }
+      return { sum: result.join(''), carryOut: carry, carries: carries.join('') };
+    }
+
+    function getRepresentation(num, bits, method) {
+      const absVal = Math.abs(num);
+      const trueBinary = toUnsignedBinary(absVal, bits);
+
+      if (num >= 0) {
+        return {
+          steps: `Since ${num} is positive, representation = True Binary: ${trueBinary}`,
+          binary: trueBinary
+        };
+      } else {
+        const onesComp = invertBits(trueBinary);
+        if (method === '1s') {
+          return {
+            steps: `Magnitude ${absVal} = ${trueBinary}\n1's Complement (invert bits) = ${onesComp}`,
+            binary: onesComp
+          };
+        } else {
+          // 2's complement: 1's comp + 1
+          const twosAdd = addBinaryStrings(onesComp, '1'.padStart(bits, '0'));
+          return {
+            steps: `Magnitude ${absVal} = ${trueBinary}\n1's Complement = ${onesComp}\n2's Complement = ${onesComp} + 1 = ${twosAdd.sum}`,
+            binary: twosAdd.sum
+          };
         }
-      } catch(e) {
-        decVal = 0;
+      }
+    }
+
+    // Solve Signed Arithmetic
+    function solveArithmetic() {
+      const n1 = parseInt(document.getElementById('num1').value, 10);
+      let n2 = parseInt(document.getElementById('num2').value, 10);
+      const op = document.getElementById('arith-op').value;
+      const method = document.getElementById('arith-method').value;
+      const bits = parseInt(document.getElementById('bit-length').value, 10);
+
+      const minVal = method === '2s' ? -(1 << (bits - 1)) : -( (1 << (bits - 1)) - 1 );
+      const maxVal = (1 << (bits - 1)) - 1;
+
+      // If subtraction: A - B => A + (-B)
+      let effectiveN2 = n2;
+      let operationNote = "";
+      if (op === '-') {
+        effectiveN2 = -n2;
+        operationNote = `Subtraction operation: (${n1}) - (${n2}) is treated as (${n1}) + (${effectiveN2}).`;
       }
 
-      // Update live preview panels
-      document.getElementById('bin-val').textContent = (decVal >>> 0).toString(2);
-      document.getElementById('oct-val').textContent = (decVal >>> 0).toString(8);
-      document.getElementById('dec-val').textContent = decVal.toString(10);
-      document.getElementById('hex-val').textContent = (decVal >>> 0).toString(16).toUpperCase();
+      const rep1 = getRepresentation(n1, bits, method);
+      const rep2 = getRepresentation(effectiveN2, bits, method);
 
-      // Expression status
-      const exprElem = document.getElementById('expr');
-      if (previousValue !== null && operator) {
-        const prevInBase = (previousValue >>> 0).toString(currentBase).toUpperCase();
-        exprElem.textContent = `${prevInBase} ${operator}`;
+      const bin1 = rep1.binary;
+      const bin2 = rep2.binary;
+
+      // Add binary
+      const addRes = addBinaryStrings(bin1, bin2);
+      let finalBin = addRes.sum;
+      let endCarryNote = "";
+      let finalDec = 0;
+
+      if (method === '1s') {
+        if (addRes.carryOut === 1) {
+          const addCarry = addBinaryStrings(finalBin, '1'.padStart(bits, '0'));
+          endCarryNote = `End-around carry of 1 is generated: Add 1 to the result:\n  ${finalBin} + 1 = ${addCarry.sum}`;
+          finalBin = addCarry.sum;
+        } else {
+          endCarryNote = `No end-around carry (Carry = 0). The result is negative and in 1's complement form.`;
+        }
+
+        // Determine value
+        if (finalBin[0] === '0') {
+          finalDec = parseInt(finalBin, 2);
+        } else {
+          finalDec = -parseInt(invertBits(finalBin), 2);
+        }
       } else {
-        exprElem.textContent = "";
+        // 2's complement
+        if (addRes.carryOut === 1) {
+          endCarryNote = `End carry of 1 is discarded (in 2's complement arithmetic).`;
+        } else {
+          endCarryNote = `No carry generated (Carry = 0). Result is negative and in 2's complement form.`;
+        }
+
+        // Convert 2's complement to decimal
+        if (finalBin[0] === '0') {
+          finalDec = parseInt(finalBin, 2);
+        } else {
+          // Negative: Invert and +1
+          const inv = invertBits(finalBin);
+          const addOne = addBinaryStrings(inv, '1'.padStart(bits, '0'));
+          finalDec = -parseInt(addOne.sum, 2);
+        }
       }
-    }
 
-    function setBase(base) {
-      if (currentBase === base) return;
+      // Check Overflow
+      const trueResult = op === '+' ? (n1 + n2) : (n1 - n2);
+      const isOverflow = (finalDec !== trueResult) || (trueResult < minVal || trueResult > maxVal);
 
-      let decVal = parseInt(currentInput, currentBase) || 0;
-      currentBase = base;
-      currentInput = (decVal >>> 0).toString(currentBase).toUpperCase();
+      // Render Steps
+      const stepsContainer = document.getElementById('steps-container');
+      stepsContainer.innerHTML = `
+        ${operationNote ? `<div class="step"><div class="step-num">Step 0: Operation Conversion</div><div class="code-preview">${operationNote}</div></div>` : ''}
 
-      document.querySelectorAll('.base-row').forEach(row => row.classList.remove('active'));
-      document.getElementById(`row-${baseNames[base]}`).classList.add('active');
-      document.getElementById('active-mode-tag').textContent = `MODE: ${baseNames[base]}`;
+        <div class="step">
+          <div class="step-num">Step 1: Convert Operands into ${bits}-bit ${method === '2s' ? "2's" : "1's"} Complement</div>
+          <div class="step-desc">Number 1 = <b>${n1}</b>:</div>
+          <div class="code-preview">${rep1.steps} \n➔ Binary: ${bin1}</div>
+          <div class="step-desc" style="margin-top:8px;">Number 2 = <b>${effectiveN2}</b>:</div>
+          <div class="code-preview">${rep2.steps} \n➔ Binary: ${bin2}</div>
+        </div>
 
-      applyButtonState();
-      updateDisplay();
-    }
+        <div class="step">
+          <div class="step-num">Step 2: Binary Addition</div>
+          <div class="step-desc">Adding the two binary representations:</div>
+          <div class="code-preview">  Carry:   ${addRes.carries.split('').join(' ')}
+           ${bin1.split('').join(' ')}  (${n1})
+         + ${bin2.split('').join(' ')}  (${effectiveN2})
+        -------------------------
+  Sum:    ${addRes.carryOut ? '(1) ' : '    '}${bin1.split('').map((_, i) => addRes.sum[i]).join(' ')}</div>
+        </div>
 
-    function applyButtonState() {
-      // Hex buttons (A-F)
-      document.querySelectorAll('.btn-hex').forEach(btn => {
-        btn.disabled = currentBase < 16;
-      });
+        <div class="step">
+          <div class="step-num">Step 3: End Carry Handling</div>
+          <div class="code-preview">${endCarryNote}</div>
+        </div>
 
-      // Dec buttons (8, 9)
-      document.querySelectorAll('.btn-dec').forEach(btn => {
-        btn.disabled = currentBase < 10;
-      });
+        <div class="step">
+          <div class="step-num">Step 4: Interpretation & Final Result</div>
+          <div class="code-preview">Final ${bits}-bit Binary Result: ${finalBin}
+MSB (Sign bit) = ${finalBin[0]} (${finalBin[0] === '1' ? 'Negative' : 'Positive'})
+${finalBin[0] === '1' ? (method === '2s' ? `Magnitude = 2's Complement of ${finalBin} = ${(-finalDec).toString(2).padStart(bits, '0')} (${-finalDec})\nDecimal Result = ${finalDec}` : `Magnitude = 1's Complement of ${finalBin} = ${invertBits(finalBin)} (${-finalDec})\nDecimal Result = ${finalDec}`) : `Decimal Result = +${finalDec}`}
+Expected Math Value: ${n1} ${op} ${n2} = ${trueResult}</div>
+        </div>
+      `;
 
-      // Oct buttons (2-7)
-      document.querySelectorAll('.btn-oct').forEach(btn => {
-        btn.disabled = currentBase < 8;
-      });
-
-      // Binary buttons (0, 1) are always enabled
-    }
-
-    function inputDigit(digit) {
-      if (currentInput === "0" || shouldResetInput) {
-        currentInput = digit;
-        shouldResetInput = false;
+      // Overflow Badge
+      const badgeElem = document.getElementById('overflow-badge');
+      if (isOverflow) {
+        badgeElem.className = 'tag-badge badge-warn';
+        badgeElem.textContent = `⚠️ Overflow Detected (Valid range: [${minVal}, ${maxVal}])`;
       } else {
-        currentInput += digit;
+        badgeElem.className = 'tag-badge badge-ok';
+        badgeElem.textContent = `✅ Result Valid (No Overflow)`;
       }
-      updateDisplay();
+
+      document.getElementById('arith-solution').style.display = 'block';
     }
 
-    function chooseOperator(op) {
-      if (currentInput === "") return;
+    // --- Base Converter Functions ---
+    function convertBases() {
+      const inputStr = document.getElementById('conv-input').value.trim();
+      const fromBase = parseInt(document.getElementById('conv-from-base').value, 10);
 
-      if (previousValue !== null && !shouldResetInput) {
-        compute();
+      if (!inputStr) {
+        document.getElementById('conv-bin').textContent = "0";
+        document.getElementById('conv-oct').textContent = "0";
+        document.getElementById('conv-dec').textContent = "0";
+        document.getElementById('conv-hex').textContent = "0";
+        return;
+      }
+
+      let num = parseInt(inputStr, fromBase);
+      if (isNaN(num)) {
+        document.getElementById('conv-bin').textContent = "Invalid Input";
+        document.getElementById('conv-oct').textContent = "Invalid Input";
+        document.getElementById('conv-dec').textContent = "Invalid Input";
+        document.getElementById('conv-hex').textContent = "Invalid Input";
+        return;
+      }
+
+      document.getElementById('conv-bin').textContent = (num >>> 0).toString(2);
+      document.getElementById('conv-oct').textContent = (num >>> 0).toString(8);
+      document.getElementById('conv-dec').textContent = num.toString(10);
+      document.getElementById('conv-hex').textContent = (num >>> 0).toString(16).toUpperCase();
+
+      // Signed 8-bit complement representation info
+      const rep8_1s = getRepresentation(num, 8, '1s');
+      const rep8_2s = getRepresentation(num, 8, '2s');
+      document.getElementById('rep-1s-8').textContent = rep8_1s.binary;
+      document.getElementById('rep-2s-8').textContent = rep8_2s.binary;
+    }
+
+    function copyToClipboard(id) {
+      const text = document.getElementById(id).textContent;
+      navigator.clipboard.writeText(text);
+    }
+
+    // --- Calculator Keypad Functions ---
+    let calcBase = 2;
+    let calcInputVal = "0";
+    let calcPrevVal = null;
+    let calcOperator = null;
+    let calcResetNext = false;
+
+    function updateCalcDisplay() {
+      document.getElementById('calc-display').textContent = calcInputVal || "0";
+      const expr = document.getElementById('calc-expr');
+      if (calcPrevVal !== null && calcOperator) {
+        expr.textContent = `${(calcPrevVal >>> 0).toString(calcBase).toUpperCase()} ${calcOperator}`;
       } else {
-        previousValue = parseInt(currentInput, currentBase) || 0;
+        expr.textContent = "";
       }
-
-      operator = op;
-      shouldResetInput = true;
-      updateDisplay();
     }
 
-    function compute() {
-      if (previousValue === null || operator === null) return;
+    function changeCalcBase(base) {
+      let dec = parseInt(calcInputVal, calcBase) || 0;
+      calcBase = base;
+      calcInputVal = (dec >>> 0).toString(calcBase).toUpperCase();
 
-      const currentVal = parseInt(currentInput, currentBase) || 0;
-      let result = 0;
+      document.querySelectorAll('.btn-hex').forEach(b => b.disabled = calcBase < 16);
+      document.querySelectorAll('.btn-dec').forEach(b => b.disabled = calcBase < 10);
+      document.querySelectorAll('.btn-oct').forEach(b => b.disabled = calcBase < 8);
 
-      switch(operator) {
-        case '+':
-          result = previousValue + currentVal;
-          break;
-        case '-':
-          result = previousValue - currentVal;
-          break;
-        case '*':
-          result = previousValue * currentVal;
-          break;
-        case '/':
-          result = currentVal !== 0 ? Math.floor(previousValue / currentVal) : 0;
-          break;
+      updateCalcDisplay();
+    }
+
+    function calcInput(digit) {
+      if (calcInputVal === "0" || calcResetNext) {
+        calcInputVal = digit;
+        calcResetNext = false;
+      } else {
+        calcInputVal += digit;
       }
-
-      currentInput = (result >>> 0).toString(currentBase).toUpperCase();
-      previousValue = null;
-      operator = null;
-      shouldResetInput = true;
-      updateDisplay();
+      updateCalcDisplay();
     }
 
-    function toggleSign() {
-      let decVal = parseInt(currentInput, currentBase) || 0;
-      decVal = -decVal;
-      currentInput = (decVal >>> 0).toString(currentBase).toUpperCase();
-      updateDisplay();
-    }
-
-    function deleteLast() {
-      if (shouldResetInput) return;
-      currentInput = currentInput.slice(0, -1);
-      if (currentInput === "" || currentInput === "-") {
-        currentInput = "0";
+    function calcOp(op) {
+      if (calcPrevVal !== null && !calcResetNext) {
+        calcCompute();
+      } else {
+        calcPrevVal = parseInt(calcInputVal, calcBase) || 0;
       }
-      updateDisplay();
+      calcOperator = op;
+      calcResetNext = true;
+      updateCalcDisplay();
     }
 
-    function clearAll() {
-      currentInput = "0";
-      previousValue = null;
-      operator = null;
-      shouldResetInput = false;
-      updateDisplay();
+    function calcCompute() {
+      if (calcPrevVal === null || calcOperator === null) return;
+      const curr = parseInt(calcInputVal, calcBase) || 0;
+      let res = 0;
+      if (calcOperator === '+') res = calcPrevVal + curr;
+      if (calcOperator === '-') res = calcPrevVal - curr;
+      if (calcOperator === '*') res = calcPrevVal * curr;
+      if (calcOperator === '/') res = curr !== 0 ? Math.floor(calcPrevVal / curr) : 0;
+
+      calcInputVal = (res >>> 0).toString(calcBase).toUpperCase();
+      calcPrevVal = null;
+      calcOperator = null;
+      calcResetNext = true;
+      updateCalcDisplay();
     }
 
-    // Initialize state
-    applyButtonState();
-    updateDisplay();
+    function calcToggleSign() {
+      let dec = parseInt(calcInputVal, calcBase) || 0;
+      dec = -dec;
+      calcInputVal = (dec >>> 0).toString(calcBase).toUpperCase();
+      updateCalcDisplay();
+    }
+
+    function calcDel() {
+      calcInputVal = calcInputVal.slice(0, -1) || "0";
+      updateCalcDisplay();
+    }
+
+    function calcClear() {
+      calcInputVal = "0";
+      calcPrevVal = null;
+      calcOperator = null;
+      calcResetNext = false;
+      updateCalcDisplay();
+    }
+
+    // Initialize
+    changeCalcBase(2);
+    convertBases();
+    solveArithmetic(); // run sample question on start
   </script>
 </body>
 </html>
