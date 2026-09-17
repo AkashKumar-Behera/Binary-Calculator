@@ -220,29 +220,6 @@
       }
     }
 
-    .btn-action {
-      background: var(--accent);
-      color: #0c0e17;
-      border: none;
-      padding: 12px 18px;
-      font-weight: 700;
-      border-radius: 9px;
-      cursor: pointer;
-      transition: all 0.2s;
-      width: 100%;
-      font-size: 0.95rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      margin-top: 4px;
-    }
-
-    .btn-action:active {
-      transform: scale(0.98);
-      background: var(--accent-hover);
-    }
-
     /* Quick Preset Badges */
     .preset-btns {
       display: flex;
@@ -267,18 +244,20 @@
       border-color: var(--accent);
     }
 
-    /* Visual Arrow Diagram Container */
-    .diagram-card {
+    /* Visual Notebook Board (Like lined notebook) */
+    .notebook-sheet {
       background: #090b14;
-      border: 1px solid #282f48;
+      border: 1px solid #2b324c;
+      border-left: 4px solid var(--accent);
       border-radius: 12px;
-      padding: 16px 12px;
+      padding: 16px 14px;
       margin-top: 14px;
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
+      font-family: 'Consolas', 'Courier New', monospace;
     }
 
-    .diagram-title {
+    .notebook-title {
       font-size: 0.85rem;
       font-weight: 700;
       color: #e0af68;
@@ -286,6 +265,14 @@
       display: flex;
       align-items: center;
       gap: 6px;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    .notebook-layout-pre {
+      font-size: clamp(0.85rem, 2.5vw, 1.05rem);
+      line-height: 1.6;
+      color: #7dcfff;
+      white-space: pre;
     }
 
     /* Converter Output Boxes */
@@ -375,17 +362,6 @@
       white-space: pre;
       -webkit-overflow-scrolling: touch;
     }
-
-    .tag-badge {
-      display: inline-block;
-      padding: 4px 10px;
-      border-radius: 6px;
-      font-size: 0.72rem;
-      font-weight: 700;
-    }
-
-    .badge-ok { background: #9ece6a22; color: var(--success); border: 1px solid #9ece6a66; }
-    .badge-warn { background: #f7768e22; color: var(--danger); border: 1px solid #f7768e66; }
 
     /* Tables */
     .table-responsive {
@@ -508,7 +484,7 @@
   <div class="container">
     <header>
       <h1>🧮 Digital Logic & Code Solver</h1>
-      <p>BCD Addition • Gray ⇄ Binary • BCD / Excess-3 / 2421 • 1's/2's Complement • Multi-Base</p>
+      <p>BCD Addition (Integers & Decimals) • Gray ⇄ Binary • BCD/XS-3/2421 • Complements</p>
     </header>
 
     <!-- Mobile Scrollable Tabs -->
@@ -535,31 +511,31 @@
       </div>
     </div>
 
-    <!-- TAB 1: BCD Addition Solver with Rule (+0110 / +6 Correction) -->
+    <!-- TAB 1: BCD Addition with Exact Notebook Layout (e.g. 46.4 + 42.2 & 98 + 28) -->
     <div id="tab-bcd-add" class="tab-content active">
       <div class="card">
-        <div class="card-title">BCD (8421) Addition Step-by-Step Solver</div>
+        <div class="card-title">BCD (8421) Addition (with Decimal Point Support)</div>
         <div class="card-subtitle">
-          Solve BCD addition questions: Normal binary addition + <b>Add 0110 (6)</b> if sum > 9 or carry generated.
+          Exact notebook layout: supports decimal points (e.g. <code>46.4 + 42.2</code>) and integer additions (e.g. <code>98 + 28</code>).
         </div>
 
-        <!-- Quick Presets -->
-        <div style="font-size:0.75rem; color:var(--text-muted); margin-bottom:6px;">EXAMPLE PROBLEMS:</div>
+        <!-- Notebook Presets -->
+        <div style="font-size:0.75rem; color:var(--text-muted); margin-bottom:6px;">NOTEBOOK QUESTIONS:</div>
         <div class="preset-btns">
-          <button class="preset-chip" onclick="loadBcdAddPreset(5, 7)">5 + 7 (Sum > 9: Needs +0110)</button>
-          <button class="preset-chip" onclick="loadBcdAddPreset(25, 18)">25 + 18 (Multi-digit BCD)</button>
-          <button class="preset-chip" onclick="loadBcdAddPreset(67, 53)">67 + 53 (Both digits carry)</button>
-          <button class="preset-chip" onclick="loadBcdAddPreset(4, 3)">4 + 3 (No correction needed)</button>
+          <button class="preset-chip" onclick="loadBcdAddPreset('46.4', '42.2')">📓 46.4 + 42.2 (From Notebook Image)</button>
+          <button class="preset-chip" onclick="loadBcdAddPreset('98', '28')">📓 98 + 28 (From Notebook Image)</button>
+          <button class="preset-chip" onclick="loadBcdAddPreset('5', '7')">5 + 7</button>
+          <button class="preset-chip" onclick="loadBcdAddPreset('67.5', '53.8')">67.5 + 53.8</button>
         </div>
 
         <div class="grid-2">
           <div class="form-group">
-            <label>Decimal Number 1 (e.g. 25, 5)</label>
-            <input type="number" id="bcd-add-n1" value="25" min="0" oninput="solveBcdAddition()" inputmode="numeric">
+            <label>Decimal Number 1 (e.g. 46.4, 98)</label>
+            <input type="text" id="bcd-add-n1" value="46.4" oninput="solveBcdAddition()" inputmode="decimal">
           </div>
           <div class="form-group">
-            <label>Decimal Number 2 (e.g. 18, 7)</label>
-            <input type="number" id="bcd-add-n2" value="18" min="0" oninput="solveBcdAddition()" inputmode="numeric">
+            <label>Decimal Number 2 (e.g. 42.2, 28)</label>
+            <input type="text" id="bcd-add-n2" value="42.2" oninput="solveBcdAddition()" inputmode="decimal">
           </div>
         </div>
 
@@ -569,22 +545,30 @@
               <span>FINAL BCD RESULT</span>
               <span id="copy-bcd-res-hint" style="color:var(--accent); cursor:pointer;" onclick="copyToClipboard('bcd-add-res-val', 'copy-bcd-res-hint')">Copy</span>
             </div>
-            <div class="conv-box-val" id="bcd-add-res-val">0100 0011</div>
-            <div style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;" id="bcd-add-dec-val">Decimal: 25 + 18 = 43</div>
+            <div class="conv-box-val" id="bcd-add-res-val">1000 1000 . 0110</div>
+            <div style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;" id="bcd-add-dec-val">Decimal: 46.4 + 42.2 = 88.6</div>
           </div>
 
           <div class="conv-box">
             <div class="conv-box-header">
-              <span>CORRECTION STATUS</span>
+              <span>NOTEBOOK DECODING</span>
             </div>
-            <div class="conv-box-val" id="bcd-correction-badge" style="font-size:1rem; color:var(--warning);">Correction Applied (+0110)</div>
-            <div style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;">Rule: If nibble > 9 (1001) or Carry=1, add 0110</div>
+            <div class="conv-box-val" id="bcd-decoded-val" style="color:var(--success);">8  8  .  6</div>
+            <div style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;">Each nibble decoded to decimal</div>
           </div>
         </div>
 
-        <!-- Step-by-Step BCD Addition Walkthrough -->
+        <!-- Exact Notebook Visual Presentation -->
+        <div class="notebook-sheet">
+          <div class="notebook-title">
+            <span>📝</span> Notebook Formatted Layout
+          </div>
+          <div id="notebook-layout-view" class="notebook-layout-pre"></div>
+        </div>
+
+        <!-- Step-by-Step Details -->
         <div class="solution-box" style="display: block;">
-          <h3 style="color: #7aa2f7; font-size: 0.95rem; margin-bottom: 10px;">Detailed Nibble-by-Nibble Addition & Correction</h3>
+          <h3 style="color: #7aa2f7; font-size: 0.95rem; margin-bottom: 10px;">Detailed Step-by-Step BCD Addition</h3>
           <div id="bcd-add-steps" class="code-preview"></div>
         </div>
       </div>
@@ -625,13 +609,6 @@
             <span id="copy-gray-res-hint" style="color:var(--accent); cursor:pointer;" onclick="copyToClipboard('gray-result-val', 'copy-gray-res-hint')">Copy</span>
           </div>
           <div class="conv-box-val" id="gray-result-val">10101</div>
-        </div>
-
-        <div class="diagram-card">
-          <div class="diagram-title" id="diagram-title-text">
-            <span>✏️</span> Notebook Visual Flow & Arrow Diagram
-          </div>
-          <div id="diagram-container"></div>
         </div>
 
         <div class="solution-box" style="display: block;">
@@ -905,7 +882,7 @@
       document.getElementById('tab-' + tabId).classList.add('active');
     }
 
-    // --- BCD Addition Solver ---
+    // --- BCD Addition Solver with Decimal Point Support ---
     function loadBcdAddPreset(n1, n2) {
       document.getElementById('bcd-add-n1').value = n1;
       document.getElementById('bcd-add-n2').value = n2;
@@ -926,101 +903,148 @@
     }
 
     function solveBcdAddition() {
-      const v1 = parseInt(document.getElementById('bcd-add-n1').value, 10);
-      const v2 = parseInt(document.getElementById('bcd-add-n2').value, 10);
+      const raw1 = document.getElementById('bcd-add-n1').value.trim();
+      const raw2 = document.getElementById('bcd-add-n2').value.trim();
 
-      if (isNaN(v1) || isNaN(v2) || v1 < 0 || v2 < 0) {
+      if (!raw1 || !raw2 || isNaN(parseFloat(raw1)) || isNaN(parseFloat(raw2))) {
         document.getElementById('bcd-add-res-val').textContent = "Invalid Input";
-        document.getElementById('bcd-add-steps').textContent = "Please enter positive decimal integers.";
+        document.getElementById('notebook-layout-view').textContent = "Please enter valid decimal numbers (e.g. 46.4 and 42.2).";
         return;
       }
 
-      const totalSum = v1 + v2;
-      document.getElementById('bcd-add-dec-val').textContent = `Decimal: ${v1} + ${v2} = ${totalSum}`;
+      // Align integer and fractional parts
+      const parts1 = raw1.split('.');
+      const parts2 = raw2.split('.');
 
-      const s1 = v1.toString();
-      const s2 = v2.toString();
-      const maxLen = Math.max(s1.length, s2.length);
+      const int1 = parts1[0];
+      const int2 = parts2[0];
+      const frac1 = parts1[1] || '';
+      const frac2 = parts2[1] || '';
 
-      const p1 = s1.padStart(maxLen, '0');
-      const p2 = s2.padStart(maxLen, '0');
+      const maxIntLen = Math.max(int1.length, int2.length);
+      const maxFracLen = Math.max(frac1.length, frac2.length);
+
+      const paddedInt1 = int1.padStart(maxIntLen, '0');
+      const paddedInt2 = int2.padStart(maxIntLen, '0');
+      const paddedFrac1 = frac1.padEnd(maxFracLen, '0');
+      const paddedFrac2 = frac2.padEnd(maxFracLen, '0');
+
+      let aligned1 = paddedInt1 + (maxFracLen > 0 ? '.' + paddedFrac1 : '');
+      let aligned2 = paddedInt2 + (maxFracLen > 0 ? '.' + paddedFrac2 : '');
+
+      const hasDecimal = maxFracLen > 0;
+      const decIndex = hasDecimal ? maxIntLen : -1;
+
+      // Extract all digit characters
+      const digits1 = (paddedInt1 + paddedFrac1).split('').map(Number);
+      const digits2 = (paddedInt2 + paddedFrac2).split('').map(Number);
+      const totalDigits = digits1.length;
 
       let carryIn = 0;
+      let initialSumNibbles = [];
       let finalBcdNibbles = [];
-      let anyCorrection = false;
-      let stepsText = `BCD ADDITION RULES:\n1. Add two BCD digits (nibbles) using normal binary addition.\n2. If binary sum ≤ 9 (1001) and Carry = 0 ➔ Result is VALID (No correction).\n3. If binary sum > 9 (1001) OR Carry = 1 ➔ INVALID BCD: Add 0110 (6) to correct it.\n\n`;
-      stepsText += `Decimal: ${v1} + ${v2}\n\n`;
+      let correctionsApplied = [];
+      let stepsDetail = `BCD Addition Rules:\n- Add each digit (nibble) in binary.\n- If Sum > 9 or Carry = 1, add 0110 (6) to correct.\n\n`;
 
-      for (let pos = maxLen - 1; pos >= 0; pos--) {
-        const d1 = parseInt(p1[pos], 10);
-        const d2 = parseInt(p2[pos], 10);
+      for (let i = totalDigits - 1; i >= 0; i--) {
+        const d1 = digits1[i];
+        const d2 = digits2[i];
         const bcd1 = d1.toString(2).padStart(4, '0');
         const bcd2 = d2.toString(2).padStart(4, '0');
 
-        stepsText += `=========================================\n`;
-        stepsText += `Position ${maxLen - pos} (Digits: ${d1} + ${d2} ${carryIn ? '+ Carry In(1)' : ''}):\n`;
-        stepsText += `  BCD of ${d1} = ${bcd1}\n`;
-        stepsText += `  BCD of ${d2} = ${bcd2}\n`;
-
-        // Step 1: Initial 4-bit addition
         const step1 = add4BitBinary(bcd1, bcd2, carryIn);
         const rawDec = d1 + d2 + carryIn;
-        stepsText += `\n  Binary Addition:\n`;
-        stepsText += `       ${bcd1}\n`;
-        stepsText += `     + ${bcd2}${carryIn ? ' (with carry 1)' : ''}\n`;
-        stepsText += `    -------------\n`;
-        stepsText += `    ${step1.carryOut ? 'Carry(1) ' : '        '}${step1.sum}  (Decimal: ${rawDec})\n`;
+        initialSumNibbles.unshift(step1.sum);
 
         let finalNibble = step1.sum;
         let nextCarry = step1.carryOut;
+        let neededCorrection = false;
 
-        // Condition for BCD invalidity: sum > 9 or carry generated
+        stepsDetail += `Digit Position (Digits: ${d1} + ${d2} ${carryIn ? '+ carry 1' : ''}):\n`;
+        stepsDetail += `   ${bcd1}  (${d1})\n + ${bcd2}  (${d2})\n ---------\n   ${step1.sum}  (Raw dec: ${rawDec})\n`;
+
         if (rawDec > 9 || step1.carryOut === 1) {
-          anyCorrection = true;
-          stepsText += `\n  ⚠️ INVALID BCD! (Value ${rawDec} > 9 or Carry Out = 1)\n`;
-          stepsText += `  ➔ Add 0110 (6) for correction:\n`;
-
+          neededCorrection = true;
           const corr = add4BitBinary(step1.sum, "0110", 0);
-          stepsText += `       ${step1.sum}\n`;
-          stepsText += `     + 0110  (+6)\n`;
-          stepsText += `    -------------\n`;
-          stepsText += `    ${corr.carryOut || step1.carryOut ? 'Carry(1) ' : '        '}${corr.sum}\n`;
-
           finalNibble = corr.sum;
-          nextCarry = 1; // Carry propagates to next nibble
+          nextCarry = 1;
+          stepsDetail += `   + 0110  (Correction +6 because sum > 9 or carry generated)\n ---------\n   ${finalNibble} (Carry propagated to next)\n\n`;
         } else {
-          stepsText += `\n  ✅ VALID BCD (Sum ${rawDec} ≤ 9 and No Carry). No correction needed.\n`;
+          stepsDetail += `   Valid BCD, no correction needed.\n\n`;
           nextCarry = 0;
         }
 
+        correctionsApplied.unshift(neededCorrection);
         finalBcdNibbles.unshift(finalNibble);
         carryIn = nextCarry;
       }
 
-      // If leftover carry out from the most significant position
+      // Handle MSB carry
+      let extraCarry = false;
       if (carryIn === 1) {
+        extraCarry = true;
+        initialSumNibbles.unshift("0000");
         finalBcdNibbles.unshift("0001");
-        stepsText += `=========================================\n`;
-        stepsText += `Final Carry Out generated (1) ➔ Prepended as 0001 (1).\n`;
+        correctionsApplied.unshift(false);
       }
 
-      const finalBcdStr = finalBcdNibbles.join(' ');
+      // Format BCD representations
+      function formatNibbles(arr) {
+        let res = [];
+        let offset = extraCarry ? 1 : 0;
+        for (let i = 0; i < arr.length; i++) {
+          if (hasDecimal && i === maxIntLen + offset) {
+            res.push('.');
+          }
+          res.push(arr[i]);
+        }
+        return res.join(' ');
+      }
+
+      function formatDecimals(arr) {
+        let res = [];
+        let offset = extraCarry ? 1 : 0;
+        for (let i = 0; i < arr.length; i++) {
+          if (hasDecimal && i === maxIntLen + offset) {
+            res.push(' . ');
+          }
+          const dec = parseInt(arr[i], 2);
+          res.push(`  ${dec} `);
+        }
+        return res.join('  ');
+      }
+
+      const finalBcdStr = formatNibbles(finalBcdNibbles);
+      const decodedDecStr = formatDecimals(finalBcdNibbles);
+      const decSum = (parseFloat(raw1) + parseFloat(raw2)).toString();
+
       document.getElementById('bcd-add-res-val').textContent = finalBcdStr;
+      document.getElementById('bcd-add-dec-val').textContent = `Decimal: ${raw1} + ${raw2} = ${decSum}`;
+      document.getElementById('bcd-decoded-val').textContent = decodedDecStr;
 
-      const badge = document.getElementById('bcd-correction-badge');
-      if (anyCorrection) {
-        badge.textContent = "Correction (+0110) Applied";
-        badge.style.color = "var(--warning)";
-      } else {
-        badge.textContent = "No Correction Needed (Direct Sum)";
-        badge.style.color = "var(--success)";
+      // Render Exact Notebook Format
+      const bcdRow1 = digits1.map((d, idx) => (hasDecimal && idx === maxIntLen ? '. ' : '') + d.toString(2).padStart(4, '0')).join(' ');
+      const bcdRow2 = digits2.map((d, idx) => (hasDecimal && idx === maxIntLen ? '. ' : '') + d.toString(2).padStart(4, '0')).join(' ');
+      const initSumRow = initialSumNibbles.map((b, idx) => (hasDecimal && idx === maxIntLen + (extraCarry ? 1 : 0) ? '. ' : '') + b).join(' ');
+      const finalSumRow = finalBcdStr;
+
+      let notebookView = `  ${raw1.padStart(6, ' ')}      ${bcdRow1}\n`;
+      notebookView += `+ ${raw2.padStart(6, ' ')}    + ${bcdRow2}\n`;
+      notebookView += `--------    ${'-'.repeat(bcdRow1.length + 4)}\n`;
+
+      const anyCorr = correctionsApplied.some(Boolean);
+      if (anyCorr) {
+        notebookView += `             ${initSumRow}  (Raw binary sum)\n`;
+        const corrLine = correctionsApplied.map(c => c ? "0110" : "0000").join(' ');
+        notebookView += `           + ${corrLine}  (Correction +0110)\n`;
+        notebookView += `            ${'-'.repeat(bcdRow1.length + 4)}\n`;
       }
 
-      stepsText += `\n=========================================\n`;
-      stepsText += `FINAL BCD ANSWER = ${finalBcdStr}\n`;
-      stepsText += `Decoded Decimal = ${finalBcdNibbles.map(b => parseInt(b, 2)).join('')} (Matches ${totalSum})\n`;
+      notebookView += `  ${decSum.padStart(6, ' ')}      ${finalSumRow}\n`;
+      notebookView += `            ${decodedDecStr}\n`;
 
-      document.getElementById('bcd-add-steps').textContent = stepsText;
+      document.getElementById('notebook-layout-view').textContent = notebookView;
+      document.getElementById('bcd-add-steps').textContent = stepsDetail;
     }
 
     // Load preset from notebook
@@ -1030,7 +1054,7 @@
       solveGrayConversion();
     }
 
-    // --- Gray Code ⇄ Binary Solver with Visual Diagram ---
+    // --- Gray Code ⇄ Binary Solver ---
     function solveGrayConversion() {
       const mode = document.getElementById('gray-mode').value;
       const rawInput = document.getElementById('gray-input').value.trim();
@@ -1038,22 +1062,18 @@
       const resultTitle = document.getElementById('gray-result-title');
       const resValElem = document.getElementById('gray-result-val');
       const stepsElem = document.getElementById('gray-steps-output');
-      const diagramElem = document.getElementById('diagram-container');
 
       if (mode === 'b2g') {
         inputLabel.textContent = "Enter Binary Sequence (e.g. 11001)";
         resultTitle.textContent = "RESULT (GRAY CODE)";
-        document.getElementById('diagram-title-text').innerHTML = `<span>✏️</span> Binary to Gray Diagram (Adjacent Bits XOR)`;
       } else {
         inputLabel.textContent = "Enter Gray Code Sequence (e.g. 10101)";
         resultTitle.textContent = "RESULT (BINARY SEQUENCE)";
-        document.getElementById('diagram-title-text').innerHTML = `<span>✏️</span> Gray to Binary Diagram (Diagonal XOR)`;
       }
 
       if (!rawInput || !/^[01]+$/.test(rawInput)) {
         resValElem.textContent = "Invalid (Enter 0s & 1s only)";
         stepsElem.textContent = "Please enter a valid sequence containing only 0 and 1.";
-        diagramElem.innerHTML = `<div style="color:var(--text-muted); padding:10px;">Enter valid binary string to see diagram...</div>`;
         return;
       }
 
@@ -1062,8 +1082,7 @@
 
       if (mode === 'b2g') {
         let gray = [bits[0]];
-        let steps = `Binary Input = ${bits}\n\n`;
-        steps += `Step 1 (MSB direct copy):\n   G[0] = B[0] = ${bits[0]}\n\n`;
+        let steps = `Binary Input = ${bits}\n\nStep 1 (MSB direct copy):\n   G[0] = B[0] = ${bits[0]}\n\n`;
 
         for (let i = 1; i < n; i++) {
           const bPrev = parseInt(bits[i - 1], 10);
@@ -1077,12 +1096,9 @@
         resValElem.textContent = grayStr;
         steps += `-------------------------\nFinal Gray Code = ${grayStr}`;
         stepsElem.textContent = steps;
-
-        renderBinaryToGrayDiagram(bits, gray);
       } else {
         let binary = [bits[0]];
-        let steps = `Gray Code Input = ${bits}\n\n`;
-        steps += `Step 1 (MSB direct copy):\n   B[0] = G[0] = ${bits[0]}\n\n`;
+        let steps = `Gray Code Input = ${bits}\n\nStep 1 (MSB direct copy):\n   B[0] = G[0] = ${bits[0]}\n\n`;
 
         for (let i = 1; i < n; i++) {
           const bPrev = binary[i - 1];
@@ -1096,98 +1112,7 @@
         resValElem.textContent = binStr;
         steps += `-------------------------\nFinal Binary Sequence = ${binStr}`;
         stepsElem.textContent = steps;
-
-        renderGrayToBinaryDiagram(bits, binary);
       }
-    }
-
-    function renderBinaryToGrayDiagram(binBits, grayBits) {
-      const n = binBits.length;
-      const spacing = 58;
-      const startX = 85;
-      const width = Math.max(340, startX + n * spacing + 30);
-      const height = 150;
-
-      let svg = `
-        <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg" style="max-width:100%; overflow:visible;">
-          <defs>
-            <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-              <path d="M 0 0 L 10 5 L 0 10 z" fill="#7aa2f7" />
-            </marker>
-            <marker id="arrow-down" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-              <path d="M 0 0 L 10 5 L 0 10 z" fill="#9ece6a" />
-            </marker>
-          </defs>
-          <text x="15" y="44" fill="#9aa5ce" font-size="13" font-weight="700">Binary</text>
-          <text x="15" y="124" fill="#9ece6a" font-size="13" font-weight="700">Gray</text>
-      `;
-
-      for (let i = 0; i < n; i++) {
-        const cx = startX + i * spacing;
-        svg += `
-          <circle cx="${cx}" cy="40" r="16" fill="#1b2034" stroke="#7aa2f7" stroke-width="2"/>
-          <text x="${cx}" y="45" text-anchor="middle" fill="#fff" font-size="14" font-family="Consolas" font-weight="700">${binBits[i]}</text>
-          <line x1="${cx}" y1="58" x2="${cx}" y2="98" stroke="#9ece6a" stroke-width="1.8" marker-end="url(#arrow-down)"/>
-          <circle cx="${cx}" cy="120" r="16" fill="#14261f" stroke="#9ece6a" stroke-width="2"/>
-          <text x="${cx}" y="125" text-anchor="middle" fill="#9ece6a" font-size="14" font-family="Consolas" font-weight="700">${grayBits[i]}</text>
-        `;
-        if (i > 0) {
-          const prevCx = startX + (i - 1) * spacing;
-          const midX = (prevCx + cx) / 2;
-          svg += `
-            <path d="M ${prevCx} 22 Q ${midX} 2 ${cx} 22" fill="none" stroke="#7aa2f7" stroke-width="1.8" marker-end="url(#arrow)"/>
-            <circle cx="${midX}" cy="10" r="7" fill="#10121e" stroke="#f7768e" stroke-width="1.5"/>
-            <text x="${midX}" y="13.5" text-anchor="middle" fill="#f7768e" font-size="9" font-weight="bold">⊕</text>
-          `;
-        }
-      }
-      svg += `</svg>`;
-      document.getElementById('diagram-container').innerHTML = svg;
-    }
-
-    function renderGrayToBinaryDiagram(grayBits, binBits) {
-      const n = grayBits.length;
-      const spacing = 58;
-      const startX = 85;
-      const width = Math.max(340, startX + n * spacing + 30);
-      const height = 150;
-
-      let svg = `
-        <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg" style="max-width:100%; overflow:visible;">
-          <defs>
-            <marker id="arrow-diag" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-              <path d="M 0 0 L 10 5 L 0 10 z" fill="#f7768e" />
-            </marker>
-            <marker id="arrow-down-b" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-              <path d="M 0 0 L 10 5 L 0 10 z" fill="#7aa2f7" />
-            </marker>
-          </defs>
-          <text x="15" y="44" fill="#bb9af7" font-size="13" font-weight="700">Gray</text>
-          <text x="15" y="124" fill="#7aa2f7" font-size="13" font-weight="700">Binary</text>
-      `;
-
-      for (let i = 0; i < n; i++) {
-        const cx = startX + i * spacing;
-        svg += `
-          <circle cx="${cx}" cy="40" r="16" fill="#1b2034" stroke="#bb9af7" stroke-width="2"/>
-          <text x="${cx}" y="45" text-anchor="middle" fill="#fff" font-size="14" font-family="Consolas" font-weight="700">${grayBits[i]}</text>
-          <line x1="${cx}" y1="58" x2="${cx}" y2="98" stroke="#7aa2f7" stroke-width="1.8" marker-end="url(#arrow-down-b)"/>
-          <circle cx="${cx}" cy="120" r="16" fill="#172236" stroke="#7aa2f7" stroke-width="2"/>
-          <text x="${cx}" y="125" text-anchor="middle" fill="#7aa2f7" font-size="14" font-family="Consolas" font-weight="700">${binBits[i]}</text>
-        `;
-        if (i > 0) {
-          const prevCx = startX + (i - 1) * spacing;
-          const midX = (prevCx + cx) / 2;
-          const midY = (120 + 40) / 2;
-          svg += `
-            <path d="M ${prevCx + 12} 110 L ${cx - 12} 52" fill="none" stroke="#f7768e" stroke-width="1.8" stroke-dasharray="3,2" marker-end="url(#arrow-diag)"/>
-            <circle cx="${midX}" cy="${midY}" r="7" fill="#10121e" stroke="#f7768e" stroke-width="1.5"/>
-            <text x="${midX}" y="${midY + 3.5}" text-anchor="middle" fill="#f7768e" font-size="9" font-weight="bold">⊕</text>
-          `;
-        }
-      }
-      svg += `</svg>`;
-      document.getElementById('diagram-container').innerHTML = svg;
     }
 
     // --- Decimal Codes Logic (BCD, Excess-3, 2421, Gray) ---
@@ -1408,15 +1333,6 @@ ${finalBin[0] === '1' ? (method === '2s' ? `Magnitude = 2's Complement of ${fina
 Expected Math Value: ${n1} ${op} ${n2} = ${trueResult}</div>
         </div>
       `;
-
-      const badgeElem = document.getElementById('overflow-badge');
-      if (isOverflow) {
-        badgeElem.className = 'tag-badge badge-warn';
-        badgeElem.textContent = `⚠️ Overflow! (Range: [${minVal}, ${maxVal}])`;
-      } else {
-        badgeElem.className = 'tag-badge badge-ok';
-        badgeElem.textContent = `✅ Valid (No Overflow)`;
-      }
 
       document.getElementById('arith-solution').style.display = 'block';
     }
