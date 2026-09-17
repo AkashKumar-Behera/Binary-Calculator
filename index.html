@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Programmer / Multi-Base Calculator</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #1e1e2f, #12121c);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .calculator {
+      background: #252538;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      width: 100%;
+      max-width: 440px;
+      overflow: hidden;
+      border: 1px solid #3d3d5c;
+    }
+
+    .header {
+      padding: 16px 20px;
+      background: #1c1c2b;
+      font-size: 1.1rem;
+      font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #33334d;
+      color: #7aa2f7;
+    }
+
+    /* Live Multi-Base Display */
+    .conversions-panel {
+      padding: 12px 20px;
+      background: #191926;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      border-bottom: 1px solid #33334d;
+    }
+
+    .base-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+
+    .base-row:hover {
+      background: #2c2c44;
+    }
+
+    .base-row.active {
+      background: #363654;
+      border-left: 3px solid #7aa2f7;
+    }
+
+    .base-label {
+      color: #9aa5ce;
+      font-weight: 600;
+      width: 45px;
+    }
+
+    .base-val {
+      font-family: 'Consolas', monospace;
+      color: #e0af68;
+      word-break: break-all;
+      text-align: right;
+    }
+
+    /* Primary Screen */
+    .display {
+      padding: 18px 20px;
+      background: #14141f;
+      text-align: right;
+    }
+
+    .expression {
+      min-height: 20px;
+      font-size: 0.95rem;
+      color: #7982a9;
+      font-family: 'Consolas', monospace;
+      word-wrap: break-word;
+    }
+
+    .current-val {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #f7768e;
+      font-family: 'Consolas', monospace;
+      margin-top: 4px;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+
+    /* Keypad Grid */
+    .keypad {
+      padding: 16px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    button {
+      background: #2f2f48;
+      color: #c0caf5;
+      border: 1px solid #3d3d60;
+      border-radius: 8px;
+      padding: 14px 0;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      user-select: none;
+    }
+
+    button:hover:not(:disabled) {
+      background: #3e3e60;
+      color: #fff;
+    }
+
+    button:active:not(:disabled) {
+      transform: scale(0.96);
+    }
+
+    button:disabled {
+      background: #1f1f2e;
+      color: #4a4a68;
+      border-color: #27273a;
+      cursor: not-allowed;
+    }
+
+    .btn-op {
+      background: #3b4261;
+      color: #7dcfff;
+    }
+
+    .btn-op:hover:not(:disabled) {
+      background: #4a547a;
+    }
+
+    .btn-clear {
+      background: #f7768e22;
+      color: #f7768e;
+      border-color: #f7768e55;
+    }
+
+    .btn-clear:hover {
+      background: #f7768e44;
+    }
+
+    .btn-equals {
+      background: #7aa2f7;
+      color: #1a1b26;
+      font-weight: bold;
+    }
+
+    .btn-equals:hover {
+      background: #89b4fa;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="calculator">
+    <div class="header">
+      <span>🔢 Multi-Base Calculator</span>
+      <span id="active-mode-tag" style="font-size: 0.8rem; background: #7aa2f722; color: #7aa2f7; padding: 2px 8px; border-radius: 4px;">MODE: BIN</span>
+    </div>
+
+    <!-- Live Base Previews (Click any to switch active input mode) -->
+    <div class="conversions-panel">
+      <div class="base-row" id="row-HEX" onclick="setBase(16)">
+        <span class="base-label">HEX</span>
+        <span class="base-val" id="hex-val">0</span>
+      </div>
+      <div class="base-row" id="row-DEC" onclick="setBase(10)">
+        <span class="base-label">DEC</span>
+        <span class="base-val" id="dec-val">0</span>
+      </div>
+      <div class="base-row" id="row-OCT" onclick="setBase(8)">
+        <span class="base-label">OCT</span>
+        <span class="base-val" id="oct-val">0</span>
+      </div>
+      <div class="base-row active" id="row-BIN" onclick="setBase(2)">
+        <span class="base-label">BIN</span>
+        <span class="base-val" id="bin-val">0</span>
+      </div>
+    </div>
+
+    <!-- Main Calculation Screens -->
+    <div class="display">
+      <div class="expression" id="expr"></div>
+      <div class="current-val" id="display">0</div>
+    </div>
+
+    <!-- Buttons -->
+    <div class="keypad">
+      <!-- Row 1: Hex keys A, B & AC, DEL -->
+      <button class="btn-hex" onclick="inputDigit('A')">A</button>
+      <button class="btn-hex" onclick="inputDigit('B')">B</button>
+      <button class="btn-clear" onclick="clearAll()">AC</button>
+      <button class="btn-clear" onclick="deleteLast()">DEL</button>
+
+      <!-- Row 2: Hex C, D, E, F -->
+      <button class="btn-hex" onclick="inputDigit('C')">C</button>
+      <button class="btn-hex" onclick="inputDigit('D')">D</button>
+      <button class="btn-hex" onclick="inputDigit('E')">E</button>
+      <button class="btn-hex" onclick="inputDigit('F')">F</button>
+
+      <!-- Row 3: Digits 7, 8, 9 & Divide -->
+      <button class="btn-oct" onclick="inputDigit('7')">7</button>
+      <button class="btn-dec" onclick="inputDigit('8')">8</button>
+      <button class="btn-dec" onclick="inputDigit('9')">9</button>
+      <button class="btn-op" onclick="chooseOperator('/')">÷</button>
+
+      <!-- Row 4: Digits 4, 5, 6 & Multiply -->
+      <button class="btn-oct" onclick="inputDigit('4')">4</button>
+      <button class="btn-oct" onclick="inputDigit('5')">5</button>
+      <button class="btn-oct" onclick="inputDigit('6')">6</button>
+      <button class="btn-op" onclick="chooseOperator('*')">×</button>
+
+      <!-- Row 5: Digits 1, 2, 3 & Minus -->
+      <button class="btn-bin" onclick="inputDigit('1')">1</button>
+      <button class="btn-oct" onclick="inputDigit('2')">2</button>
+      <button class="btn-oct" onclick="inputDigit('3')">3</button>
+      <button class="btn-op" onclick="chooseOperator('-')">−</button>
+
+      <!-- Row 6: 0, Sign Toggle, Plus, Equals -->
+      <button class="btn-bin" onclick="inputDigit('0')">0</button>
+      <button class="btn-op" onclick="toggleSign()">±</button>
+      <button class="btn-op" onclick="chooseOperator('+')">+</button>
+      <button class="btn-equals" onclick="compute()">=</button>
+    </div>
+  </div>
+
+  <script>
+    let currentBase = 2; // Default Binary mode
+    let currentInput = "0";
+    let previousValue = null;
+    let operator = null;
+    let shouldResetInput = false;
+
+    const baseNames = { 2: 'BIN', 8: 'OCT', 10: 'DEC', 16: 'HEX' };
+
+    function updateDisplay() {
+      const displayElem = document.getElementById('display');
+      displayElem.textContent = currentInput || "0";
+
+      // Convert current input to decimal representation for live conversions
+      let decVal = 0;
+      try {
+        if (currentInput && currentInput !== "-") {
+          decVal = parseInt(currentInput, currentBase) || 0;
+        }
+      } catch(e) {
+        decVal = 0;
+      }
+
+      // Update live preview panels
+      document.getElementById('bin-val').textContent = (decVal >>> 0).toString(2);
+      document.getElementById('oct-val').textContent = (decVal >>> 0).toString(8);
+      document.getElementById('dec-val').textContent = decVal.toString(10);
+      document.getElementById('hex-val').textContent = (decVal >>> 0).toString(16).toUpperCase();
+
+      // Expression status
+      const exprElem = document.getElementById('expr');
+      if (previousValue !== null && operator) {
+        const prevInBase = (previousValue >>> 0).toString(currentBase).toUpperCase();
+        exprElem.textContent = `${prevInBase} ${operator}`;
+      } else {
+        exprElem.textContent = "";
+      }
+    }
+
+    function setBase(base) {
+      if (currentBase === base) return;
+
+      let decVal = parseInt(currentInput, currentBase) || 0;
+      currentBase = base;
+      currentInput = (decVal >>> 0).toString(currentBase).toUpperCase();
+
+      document.querySelectorAll('.base-row').forEach(row => row.classList.remove('active'));
+      document.getElementById(`row-${baseNames[base]}`).classList.add('active');
+      document.getElementById('active-mode-tag').textContent = `MODE: ${baseNames[base]}`;
+
+      applyButtonState();
+      updateDisplay();
+    }
+
+    function applyButtonState() {
+      // Hex buttons (A-F)
+      document.querySelectorAll('.btn-hex').forEach(btn => {
+        btn.disabled = currentBase < 16;
+      });
+
+      // Dec buttons (8, 9)
+      document.querySelectorAll('.btn-dec').forEach(btn => {
+        btn.disabled = currentBase < 10;
+      });
+
+      // Oct buttons (2-7)
+      document.querySelectorAll('.btn-oct').forEach(btn => {
+        btn.disabled = currentBase < 8;
+      });
+
+      // Binary buttons (0, 1) are always enabled
+    }
+
+    function inputDigit(digit) {
+      if (currentInput === "0" || shouldResetInput) {
+        currentInput = digit;
+        shouldResetInput = false;
+      } else {
+        currentInput += digit;
+      }
+      updateDisplay();
+    }
+
+    function chooseOperator(op) {
+      if (currentInput === "") return;
+
+      if (previousValue !== null && !shouldResetInput) {
+        compute();
+      } else {
+        previousValue = parseInt(currentInput, currentBase) || 0;
+      }
+
+      operator = op;
+      shouldResetInput = true;
+      updateDisplay();
+    }
+
+    function compute() {
+      if (previousValue === null || operator === null) return;
+
+      const currentVal = parseInt(currentInput, currentBase) || 0;
+      let result = 0;
+
+      switch(operator) {
+        case '+':
+          result = previousValue + currentVal;
+          break;
+        case '-':
+          result = previousValue - currentVal;
+          break;
+        case '*':
+          result = previousValue * currentVal;
+          break;
+        case '/':
+          result = currentVal !== 0 ? Math.floor(previousValue / currentVal) : 0;
+          break;
+      }
+
+      currentInput = (result >>> 0).toString(currentBase).toUpperCase();
+      previousValue = null;
+      operator = null;
+      shouldResetInput = true;
+      updateDisplay();
+    }
+
+    function toggleSign() {
+      let decVal = parseInt(currentInput, currentBase) || 0;
+      decVal = -decVal;
+      currentInput = (decVal >>> 0).toString(currentBase).toUpperCase();
+      updateDisplay();
+    }
+
+    function deleteLast() {
+      if (shouldResetInput) return;
+      currentInput = currentInput.slice(0, -1);
+      if (currentInput === "" || currentInput === "-") {
+        currentInput = "0";
+      }
+      updateDisplay();
+    }
+
+    function clearAll() {
+      currentInput = "0";
+      previousValue = null;
+      operator = null;
+      shouldResetInput = false;
+      updateDisplay();
+    }
+
+    // Initialize state
+    applyButtonState();
+    updateDisplay();
+  </script>
+</body>
+</html>
