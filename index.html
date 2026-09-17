@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Programmer Multi-Base & Binary Arithmetic Solver</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Digital Logic & Multi-Base Solver</title>
   <style>
     :root {
-      --bg-main: #0f111a;
-      --bg-card: #1a1d2e;
-      --bg-input: #121420;
+      --bg-main: #0c0e17;
+      --bg-card: #161928;
+      --bg-input: #10121e;
       --accent: #7aa2f7;
       --accent-hover: #89b4fa;
       --text: #c0caf5;
@@ -16,79 +16,107 @@
       --success: #9ece6a;
       --warning: #e0af68;
       --danger: #f7768e;
-      --border: #292e42;
+      --border: #23283d;
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
     }
 
     body {
-      background: radial-gradient(circle at top right, #1f2335, #0f111a);
+      background: #0c0e17;
+      background-image: radial-gradient(circle at 50% 0%, #1a1e36 0%, #0c0e17 80%);
       color: var(--text);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 24px 16px;
+      padding: 16px 12px;
+      overflow-x: hidden;
     }
 
     .container {
       width: 100%;
-      max-width: 900px;
+      max-width: 760px;
     }
 
     header {
       text-align: center;
-      margin-bottom: 24px;
+      margin-bottom: 16px;
+      padding: 0 8px;
     }
 
     header h1 {
-      font-size: 1.8rem;
+      font-size: clamp(1.3rem, 5vw, 1.8rem);
+      font-weight: 800;
       color: #bb9af7;
+      line-height: 1.25;
       margin-bottom: 6px;
     }
 
     header p {
       color: var(--text-muted);
-      font-size: 0.95rem;
+      font-size: clamp(0.75rem, 3vw, 0.9rem);
+      line-height: 1.4;
     }
 
-    /* Tabs */
+    /* Mobile First Navigation Pills */
+    .tabs-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      margin-bottom: 16px;
+      padding: 2px 0;
+    }
+    .tabs-wrapper::-webkit-scrollbar {
+      display: none;
+    }
+
     .tabs {
       display: flex;
-      background: #141724;
-      padding: 6px;
+      background: #121422;
+      padding: 4px;
       border-radius: 12px;
       border: 1px solid var(--border);
-      gap: 6px;
-      margin-bottom: 20px;
+      gap: 4px;
+      min-width: 100%;
+      width: max-content;
+    }
+
+    @media (min-width: 540px) {
+      .tabs {
+        width: 100%;
+      }
     }
 
     .tab-btn {
       flex: 1;
-      padding: 12px 16px;
+      padding: 10px 14px;
       background: transparent;
       border: none;
       color: var(--text-muted);
       font-weight: 600;
-      font-size: 0.95rem;
-      border-radius: 8px;
+      font-size: 0.85rem;
+      border-radius: 9px;
       cursor: pointer;
       transition: all 0.2s ease;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 6px;
+      white-space: nowrap;
     }
 
     .tab-btn.active {
       background: var(--accent);
-      color: #1a1b26;
-      box-shadow: 0 4px 12px rgba(122, 162, 247, 0.3);
+      color: #0f111a;
+      box-shadow: 0 2px 10px rgba(122, 162, 247, 0.35);
+      font-weight: 700;
     }
 
     .tab-content {
@@ -103,93 +131,143 @@
     .card {
       background: var(--bg-card);
       border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 20px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.35);
-      margin-bottom: 20px;
+      border-radius: 16px;
+      padding: 18px 14px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+      margin-bottom: 16px;
+    }
+
+    @media(min-width: 600px) {
+      .card {
+        padding: 24px 20px;
+      }
     }
 
     .card-title {
-      font-size: 1.15rem;
+      font-size: 1.05rem;
+      font-weight: 700;
       color: var(--accent);
-      margin-bottom: 16px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      margin-bottom: 6px;
+      line-height: 1.35;
+    }
+
+    .card-subtitle {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+      line-height: 1.4;
     }
 
     /* Forms & Inputs */
     .form-group {
-      margin-bottom: 16px;
+      margin-bottom: 14px;
+      width: 100%;
     }
 
     label {
       display: block;
-      font-size: 0.85rem;
-      color: var(--text-muted);
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #9aa5ce;
       margin-bottom: 6px;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.6px;
     }
 
     input, select {
       width: 100%;
       background: var(--bg-input);
       border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 12px 14px;
+      border-radius: 10px;
+      padding: 11px 12px;
       color: #fff;
-      font-size: 1rem;
+      font-size: 0.95rem;
       font-family: 'Consolas', monospace;
       outline: none;
-      transition: border-color 0.2s;
+      transition: all 0.2s;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+
+    select {
+      background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%237aa2f7%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px top 50%;
+      background-size: 10px auto;
+      padding-right: 32px;
     }
 
     input:focus, select:focus {
       border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(122, 162, 247, 0.2);
     }
 
+    /* Responsive Grid Layouts */
     .grid-2 {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    @media(min-width: 500px) {
+      .grid-2 {
+        grid-template-columns: 1fr 1fr;
+      }
     }
 
     .grid-3 {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap: 12px;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    @media(min-width: 600px) {
+      .grid-3 {
+        grid-template-columns: 1fr 1fr 1.2fr;
+      }
     }
 
     .btn-action {
       background: var(--accent);
-      color: #1a1b26;
+      color: #0f111a;
       border: none;
-      padding: 12px 20px;
-      font-weight: bold;
-      border-radius: 8px;
+      padding: 13px 20px;
+      font-weight: 700;
+      border-radius: 10px;
       cursor: pointer;
-      transition: 0.2s;
+      transition: all 0.2s;
       width: 100%;
-      font-size: 1rem;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 4px;
     }
 
-    .btn-action:hover {
+    .btn-action:active {
+      transform: scale(0.98);
       background: var(--accent-hover);
     }
 
     /* Live Converter Output Boxes */
     .converter-outputs {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 14px;
-      margin-top: 16px;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    @media(min-width: 480px) {
+      .converter-outputs {
+        grid-template-columns: 1fr 1fr;
+      }
     }
 
     .conv-box {
       background: var(--bg-input);
       border: 1px solid var(--border);
-      border-radius: 10px;
+      border-radius: 12px;
       padding: 12px 14px;
       position: relative;
     }
@@ -197,33 +275,42 @@
     .conv-box-header {
       display: flex;
       justify-content: space-between;
+      align-items: center;
       margin-bottom: 6px;
-      font-size: 0.8rem;
+      font-size: 0.72rem;
       color: var(--text-muted);
-      font-weight: 600;
+      font-weight: 700;
+      letter-spacing: 0.5px;
     }
 
     .conv-box-val {
       font-family: 'Consolas', monospace;
       font-size: 1.15rem;
+      font-weight: 600;
       color: var(--warning);
       word-break: break-all;
     }
 
     /* Step-by-Step Solution Viewer */
     .solution-box {
-      background: #131520;
+      background: #0f111c;
       border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 20px;
-      margin-top: 20px;
+      border-radius: 14px;
+      padding: 14px 12px;
+      margin-top: 16px;
       display: none;
     }
 
+    @media(min-width: 600px) {
+      .solution-box {
+        padding: 18px 16px;
+      }
+    }
+
     .step {
-      margin-bottom: 16px;
-      padding-bottom: 16px;
-      border-bottom: 1px dashed #292e42;
+      margin-bottom: 14px;
+      padding-bottom: 14px;
+      border-bottom: 1px dashed #24293e;
     }
 
     .step:last-child {
@@ -234,36 +321,39 @@
 
     .step-num {
       color: #bb9af7;
-      font-weight: bold;
-      font-size: 0.95rem;
+      font-weight: 700;
+      font-size: 0.88rem;
       margin-bottom: 4px;
     }
 
     .step-desc {
       color: var(--text);
-      font-size: 0.95rem;
-      margin-bottom: 8px;
+      font-size: 0.85rem;
+      margin-bottom: 6px;
+      line-height: 1.4;
     }
 
     .code-preview {
-      background: #090a10;
+      background: #07080f;
       border-left: 3px solid var(--accent);
-      padding: 10px 14px;
+      padding: 10px 12px;
       font-family: 'Consolas', monospace;
       color: #7dcfff;
-      border-radius: 4px;
-      font-size: 0.95rem;
+      border-radius: 6px;
+      font-size: 0.82rem;
       line-height: 1.5;
-      white-space: pre-wrap;
+      overflow-x: auto;
+      white-space: pre;
+      -webkit-overflow-scrolling: touch;
     }
 
     .tag-badge {
       display: inline-block;
-      padding: 3px 8px;
-      border-radius: 4px;
-      font-size: 0.75rem;
-      font-weight: bold;
-      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.4px;
     }
 
     .badge-ok { background: #9ece6a22; color: var(--success); border: 1px solid #9ece6a66; }
@@ -271,72 +361,71 @@
 
     /* Calculator UI */
     .calc-wrapper {
-      max-width: 440px;
+      max-width: 380px;
       margin: 0 auto;
+      width: 100%;
     }
 
     .calc-screen {
       background: var(--bg-input);
       border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 16px;
+      border-radius: 12px;
+      padding: 12px 14px;
       text-align: right;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
 
     .calc-expr {
-      min-height: 20px;
-      font-size: 0.9rem;
+      min-height: 18px;
+      font-size: 0.85rem;
       color: var(--text-muted);
       font-family: 'Consolas', monospace;
     }
 
     .calc-val {
-      font-size: 2rem;
-      font-weight: bold;
+      font-size: 1.8rem;
+      font-weight: 700;
       color: var(--danger);
       font-family: 'Consolas', monospace;
       margin-top: 4px;
       word-break: break-all;
+      overflow-x: auto;
     }
 
     .keypad {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
+      gap: 8px;
     }
 
     .btn-key {
-      background: #25283d;
+      background: #202438;
       color: var(--text);
       border: 1px solid var(--border);
       border-radius: 8px;
-      padding: 14px 0;
-      font-size: 1.1rem;
+      padding: 12px 0;
+      font-size: 1.05rem;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.15s ease;
+      transition: all 0.1s ease;
+      touch-action: manipulation;
     }
 
-    .btn-key:hover:not(:disabled) {
-      background: #363a56;
-      color: #fff;
+    .btn-key:active:not(:disabled) {
+      transform: scale(0.95);
+      background: #343a57;
     }
 
     .btn-key:disabled {
-      background: #171824;
-      color: #3f435c;
-      border-color: #1c1e2d;
+      background: #121420;
+      color: #353950;
+      border-color: #1a1c2b;
       cursor: not-allowed;
     }
 
-    .btn-op { background: #333a59; color: #7dcfff; }
+    .btn-op { background: #2b334d; color: #7dcfff; }
     .btn-clear { background: #f7768e22; color: var(--danger); border-color: #f7768e55; }
-    .btn-eq { background: var(--accent); color: #1a1b26; font-weight: bold; }
-
-    @media(max-width: 600px) {
-      .grid-2 { grid-template-columns: 1fr; }
-    }
+    .btn-eq { background: var(--accent); color: #0f111a; font-weight: 800; }
   </style>
 </head>
 <body>
@@ -347,35 +436,37 @@
       <p>Convert Base (Dec/Bin/Oct/Hex) & Solve 1's/2's Complement Addition/Subtraction with Full Steps</p>
     </header>
 
-    <!-- Navigation Tabs -->
-    <div class="tabs">
-      <button class="tab-btn active" onclick="switchTab('arithmetic')">
-        <span>📝</span> 1's & 2's Complement Solver
-      </button>
-      <button class="tab-btn" onclick="switchTab('converter')">
-        <span>🔄</span> Base Converter
-      </button>
-      <button class="tab-btn" onclick="switchTab('calc')">
-        <span>🔢</span> Programmer Keypad
-      </button>
+    <!-- Mobile Scrollable / Desktop Flex Tabs -->
+    <div class="tabs-wrapper">
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('arithmetic')">
+          <span>📝</span> 1's & 2's Complement
+        </button>
+        <button class="tab-btn" onclick="switchTab('converter')">
+          <span>🔄</span> Base Converter
+        </button>
+        <button class="tab-btn" onclick="switchTab('calc')">
+          <span>🔢</span> Keypad Calc
+        </button>
+      </div>
     </div>
 
     <!-- TAB 1: Step-by-Step Complement Arithmetic Solver -->
     <div id="tab-arithmetic" class="tab-content active">
       <div class="card">
-        <div class="card-title">Solve Signed Binary Arithmetic (Jaise Exam/Notebook Questions)</div>
-        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 14px;">
-          Example: <code>(-6) + (-2) using 4 bits</code>, <code>(-5) + 2 using 4 bits</code>, ya <code>6 - 3</code>
-        </p>
+        <div class="card-title">Solve Signed Binary Arithmetic</div>
+        <div class="card-subtitle">
+          Solve exam questions like <code>(-6) + (-2) using 4 bits</code>, <code>(-5) + 2</code>, etc.
+        </div>
 
         <div class="grid-2">
           <div class="form-group">
             <label>Number 1 (Decimal e.g., -6, 5)</label>
-            <input type="number" id="num1" value="-6">
+            <input type="number" id="num1" value="-6" inputmode="numeric">
           </div>
           <div class="form-group">
             <label>Number 2 (Decimal e.g., -2, 2)</label>
-            <input type="number" id="num2" value="-2">
+            <input type="number" id="num2" value="-2" inputmode="numeric">
           </div>
         </div>
 
@@ -390,15 +481,15 @@
           <div class="form-group">
             <label>Method</label>
             <select id="arith-method">
-              <option value="2s">2's Complement (Most Common)</option>
-              <option value="1s">1's Complement (End-around carry)</option>
+              <option value="2s">2's Complement (Standard)</option>
+              <option value="1s">1's Complement (End Carry)</option>
             </select>
           </div>
           <div class="form-group">
-            <label>Bit Length (Word Size)</label>
+            <label>Word Size (Bits)</label>
             <select id="bit-length">
-              <option value="4" selected>4 Bits (Range: -8 to +7)</option>
-              <option value="8">8 Bits (Range: -128 to +127)</option>
+              <option value="4" selected>4 Bits (-8 to +7)</option>
+              <option value="8">8 Bits (-128 to +127)</option>
               <option value="16">16 Bits</option>
             </select>
           </div>
@@ -408,8 +499,8 @@
 
         <!-- Solution Container -->
         <div id="arith-solution" class="solution-box">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-            <h3 style="color: #7aa2f7;">Detailed Step-by-Step Solution</h3>
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 14px;">
+            <h3 style="color: #7aa2f7; font-size: 0.95rem;">Detailed Step-by-Step Solution</h3>
             <span id="overflow-badge"></span>
           </div>
           <div id="steps-container"></div>
@@ -421,11 +512,12 @@
     <div id="tab-converter" class="tab-content">
       <div class="card">
         <div class="card-title">Universal Base Converter (Dec, Bin, Oct, Hex)</div>
+        <div class="card-subtitle">Convert instantaneously across any numeral systems.</div>
 
         <div class="grid-2">
           <div class="form-group">
             <label>Input Number</label>
-            <input type="text" id="conv-input" value="42" oninput="convertBases()">
+            <input type="text" id="conv-input" value="42" oninput="convertBases()" autocorrect="off" autocapitalize="characters">
           </div>
           <div class="form-group">
             <label>From Base</label>
@@ -443,7 +535,7 @@
           <div class="conv-box">
             <div class="conv-box-header">
               <span>BINARY (BASE 2)</span>
-              <button onclick="copyToClipboard('conv-bin')" style="background:none;border:none;color:var(--accent);cursor:pointer;">Copy</button>
+              <span id="copy-bin-hint" style="color:var(--accent); cursor:pointer;" onclick="copyToClipboard('conv-bin', 'copy-bin-hint')">Copy</span>
             </div>
             <div class="conv-box-val" id="conv-bin">101010</div>
           </div>
@@ -451,7 +543,7 @@
           <div class="conv-box">
             <div class="conv-box-header">
               <span>OCTAL (BASE 8)</span>
-              <button onclick="copyToClipboard('conv-oct')" style="background:none;border:none;color:var(--accent);cursor:pointer;">Copy</button>
+              <span id="copy-oct-hint" style="color:var(--accent); cursor:pointer;" onclick="copyToClipboard('conv-oct', 'copy-oct-hint')">Copy</span>
             </div>
             <div class="conv-box-val" id="conv-oct">52</div>
           </div>
@@ -459,7 +551,7 @@
           <div class="conv-box">
             <div class="conv-box-header">
               <span>DECIMAL (BASE 10)</span>
-              <button onclick="copyToClipboard('conv-dec')" style="background:none;border:none;color:var(--accent);cursor:pointer;">Copy</button>
+              <span id="copy-dec-hint" style="color:var(--accent); cursor:pointer;" onclick="copyToClipboard('conv-dec', 'copy-dec-hint')">Copy</span>
             </div>
             <div class="conv-box-val" id="conv-dec">42</div>
           </div>
@@ -467,21 +559,21 @@
           <div class="conv-box">
             <div class="conv-box-header">
               <span>HEXADECIMAL (BASE 16)</span>
-              <button onclick="copyToClipboard('conv-hex')" style="background:none;border:none;color:var(--accent);cursor:pointer;">Copy</button>
+              <span id="copy-hex-hint" style="color:var(--accent); cursor:pointer;" onclick="copyToClipboard('conv-hex', 'copy-hex-hint')">Copy</span>
             </div>
             <div class="conv-box-val" id="conv-hex">2A</div>
           </div>
         </div>
 
-        <div style="margin-top: 18px;" class="card">
-          <h4 style="color: var(--text-muted); margin-bottom: 10px; font-size: 0.9rem;">Sign Representations (For 8-bit & 16-bit):</h4>
+        <div style="margin-top: 14px;" class="card">
+          <h4 style="color: var(--text-muted); margin-bottom: 8px; font-size: 0.8rem; text-transform: uppercase;">8-Bit Signed Complements:</h4>
           <div class="grid-2">
             <div>
-              <span style="font-size: 0.85rem; color: var(--text-muted);">8-bit 1's Complement:</span>
+              <span style="font-size: 0.75rem; color: var(--text-muted);">1's Complement:</span>
               <div id="rep-1s-8" class="code-preview" style="margin-top:4px;">-</div>
             </div>
             <div>
-              <span style="font-size: 0.85rem; color: var(--text-muted);">8-bit 2's Complement:</span>
+              <span style="font-size: 0.75rem; color: var(--text-muted);">2's Complement:</span>
               <div id="rep-2s-8" class="code-preview" style="margin-top:4px;">-</div>
             </div>
           </div>
@@ -493,9 +585,9 @@
     <div id="tab-calc" class="tab-content">
       <div class="calc-wrapper">
         <div class="card">
-          <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-            <span style="font-size: 0.85rem; color: var(--text-muted);">CURRENT BASE:</span>
-            <select id="calc-base-select" style="width: auto; padding: 4px 10px;" onchange="changeCalcBase(Number(this.value))">
+          <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <span style="font-size: 0.75rem; font-weight:700; color: var(--text-muted);">MODE:</span>
+            <select id="calc-base-select" style="width: auto; padding: 6px 12px; font-size:0.85rem;" onchange="changeCalcBase(Number(this.value))">
               <option value="2" selected>Binary (BIN)</option>
               <option value="8">Octal (OCT)</option>
               <option value="10">Decimal (DEC)</option>
@@ -588,18 +680,17 @@
 
       if (num >= 0) {
         return {
-          steps: `Since ${num} is positive, representation = True Binary: ${trueBinary}`,
+          steps: `Since ${num} is positive:\nTrue Binary = ${trueBinary}`,
           binary: trueBinary
         };
       } else {
         const onesComp = invertBits(trueBinary);
         if (method === '1s') {
           return {
-            steps: `Magnitude ${absVal} = ${trueBinary}\n1's Complement (invert bits) = ${onesComp}`,
+            steps: `Magnitude ${absVal} = ${trueBinary}\n1's Complement = ${onesComp}`,
             binary: onesComp
           };
         } else {
-          // 2's complement: 1's comp + 1
           const twosAdd = addBinaryStrings(onesComp, '1'.padStart(bits, '0'));
           return {
             steps: `Magnitude ${absVal} = ${trueBinary}\n1's Complement = ${onesComp}\n2's Complement = ${onesComp} + 1 = ${twosAdd.sum}`,
@@ -617,15 +708,19 @@
       const method = document.getElementById('arith-method').value;
       const bits = parseInt(document.getElementById('bit-length').value, 10);
 
+      if (isNaN(n1) || isNaN(n2)) {
+        alert("Please enter valid numbers");
+        return;
+      }
+
       const minVal = method === '2s' ? -(1 << (bits - 1)) : -( (1 << (bits - 1)) - 1 );
       const maxVal = (1 << (bits - 1)) - 1;
 
-      // If subtraction: A - B => A + (-B)
       let effectiveN2 = n2;
       let operationNote = "";
       if (op === '-') {
         effectiveN2 = -n2;
-        operationNote = `Subtraction operation: (${n1}) - (${n2}) is treated as (${n1}) + (${effectiveN2}).`;
+        operationNote = `Subtraction operation: (${n1}) - (${n2}) is converted to (${n1}) + (${effectiveN2}).`;
       }
 
       const rep1 = getRepresentation(n1, bits, method);
@@ -634,7 +729,6 @@
       const bin1 = rep1.binary;
       const bin2 = rep2.binary;
 
-      // Add binary
       const addRes = addBinaryStrings(bin1, bin2);
       let finalBin = addRes.sum;
       let endCarryNote = "";
@@ -643,57 +737,51 @@
       if (method === '1s') {
         if (addRes.carryOut === 1) {
           const addCarry = addBinaryStrings(finalBin, '1'.padStart(bits, '0'));
-          endCarryNote = `End-around carry of 1 is generated: Add 1 to the result:\n  ${finalBin} + 1 = ${addCarry.sum}`;
+          endCarryNote = `End-around carry (1) generated:\nAdd 1 to result: ${finalBin} + 1 = ${addCarry.sum}`;
           finalBin = addCarry.sum;
         } else {
-          endCarryNote = `No end-around carry (Carry = 0). The result is negative and in 1's complement form.`;
+          endCarryNote = `No end carry (Carry = 0). Result is negative in 1's complement.`;
         }
 
-        // Determine value
         if (finalBin[0] === '0') {
           finalDec = parseInt(finalBin, 2);
         } else {
           finalDec = -parseInt(invertBits(finalBin), 2);
         }
       } else {
-        // 2's complement
         if (addRes.carryOut === 1) {
-          endCarryNote = `End carry of 1 is discarded (in 2's complement arithmetic).`;
+          endCarryNote = `End carry (1) is discarded (in 2's complement arithmetic).`;
         } else {
-          endCarryNote = `No carry generated (Carry = 0). Result is negative and in 2's complement form.`;
+          endCarryNote = `No carry (Carry = 0). Result is negative in 2's complement.`;
         }
 
-        // Convert 2's complement to decimal
         if (finalBin[0] === '0') {
           finalDec = parseInt(finalBin, 2);
         } else {
-          // Negative: Invert and +1
           const inv = invertBits(finalBin);
           const addOne = addBinaryStrings(inv, '1'.padStart(bits, '0'));
           finalDec = -parseInt(addOne.sum, 2);
         }
       }
 
-      // Check Overflow
       const trueResult = op === '+' ? (n1 + n2) : (n1 - n2);
       const isOverflow = (finalDec !== trueResult) || (trueResult < minVal || trueResult > maxVal);
 
-      // Render Steps
       const stepsContainer = document.getElementById('steps-container');
       stepsContainer.innerHTML = `
-        ${operationNote ? `<div class="step"><div class="step-num">Step 0: Operation Conversion</div><div class="code-preview">${operationNote}</div></div>` : ''}
+        ${operationNote ? `<div class="step"><div class="step-num">Step 0: Convert Operation</div><div class="code-preview">${operationNote}</div></div>` : ''}
 
         <div class="step">
-          <div class="step-num">Step 1: Convert Operands into ${bits}-bit ${method === '2s' ? "2's" : "1's"} Complement</div>
+          <div class="step-num">Step 1: Convert into ${bits}-bit ${method === '2s' ? "2's" : "1's"} Complement</div>
           <div class="step-desc">Number 1 = <b>${n1}</b>:</div>
-          <div class="code-preview">${rep1.steps} \n➔ Binary: ${bin1}</div>
+          <div class="code-preview">${rep1.steps}\n➔ Rep: ${bin1}</div>
           <div class="step-desc" style="margin-top:8px;">Number 2 = <b>${effectiveN2}</b>:</div>
-          <div class="code-preview">${rep2.steps} \n➔ Binary: ${bin2}</div>
+          <div class="code-preview">${rep2.steps}\n➔ Rep: ${bin2}</div>
         </div>
 
         <div class="step">
           <div class="step-num">Step 2: Binary Addition</div>
-          <div class="step-desc">Adding the two binary representations:</div>
+          <div class="step-desc">Adding bit by bit:</div>
           <div class="code-preview">  Carry:   ${addRes.carries.split('').join(' ')}
            ${bin1.split('').join(' ')}  (${n1})
          + ${bin2.split('').join(' ')}  (${effectiveN2})
@@ -707,22 +795,21 @@
         </div>
 
         <div class="step">
-          <div class="step-num">Step 4: Interpretation & Final Result</div>
-          <div class="code-preview">Final ${bits}-bit Binary Result: ${finalBin}
-MSB (Sign bit) = ${finalBin[0]} (${finalBin[0] === '1' ? 'Negative' : 'Positive'})
-${finalBin[0] === '1' ? (method === '2s' ? `Magnitude = 2's Complement of ${finalBin} = ${(-finalDec).toString(2).padStart(bits, '0')} (${-finalDec})\nDecimal Result = ${finalDec}` : `Magnitude = 1's Complement of ${finalBin} = ${invertBits(finalBin)} (${-finalDec})\nDecimal Result = ${finalDec}`) : `Decimal Result = +${finalDec}`}
+          <div class="step-num">Step 4: Final Evaluation</div>
+          <div class="code-preview">Final ${bits}-bit Binary: ${finalBin}
+Sign bit (MSB) = ${finalBin[0]} (${finalBin[0] === '1' ? 'Negative' : 'Positive'})
+${finalBin[0] === '1' ? (method === '2s' ? `Magnitude = 2's Complement of ${finalBin} = ${(-finalDec).toString(2).padStart(bits, '0')} (${-finalDec})\nDecimal Result = ${finalDec}` : `Magnitude = 1's Complement = ${invertBits(finalBin)} (${-finalDec})\nDecimal Result = ${finalDec}`) : `Decimal Result = +${finalDec}`}
 Expected Math Value: ${n1} ${op} ${n2} = ${trueResult}</div>
         </div>
       `;
 
-      // Overflow Badge
       const badgeElem = document.getElementById('overflow-badge');
       if (isOverflow) {
         badgeElem.className = 'tag-badge badge-warn';
-        badgeElem.textContent = `⚠️ Overflow Detected (Valid range: [${minVal}, ${maxVal}])`;
+        badgeElem.textContent = `⚠️ Overflow! (Range: [${minVal}, ${maxVal}])`;
       } else {
         badgeElem.className = 'tag-badge badge-ok';
-        badgeElem.textContent = `✅ Result Valid (No Overflow)`;
+        badgeElem.textContent = `✅ Valid (No Overflow)`;
       }
 
       document.getElementById('arith-solution').style.display = 'block';
@@ -743,10 +830,10 @@ Expected Math Value: ${n1} ${op} ${n2} = ${trueResult}</div>
 
       let num = parseInt(inputStr, fromBase);
       if (isNaN(num)) {
-        document.getElementById('conv-bin').textContent = "Invalid Input";
-        document.getElementById('conv-oct').textContent = "Invalid Input";
-        document.getElementById('conv-dec').textContent = "Invalid Input";
-        document.getElementById('conv-hex').textContent = "Invalid Input";
+        document.getElementById('conv-bin').textContent = "Invalid";
+        document.getElementById('conv-oct').textContent = "Invalid";
+        document.getElementById('conv-dec').textContent = "Invalid";
+        document.getElementById('conv-hex').textContent = "Invalid";
         return;
       }
 
@@ -755,16 +842,22 @@ Expected Math Value: ${n1} ${op} ${n2} = ${trueResult}</div>
       document.getElementById('conv-dec').textContent = num.toString(10);
       document.getElementById('conv-hex').textContent = (num >>> 0).toString(16).toUpperCase();
 
-      // Signed 8-bit complement representation info
       const rep8_1s = getRepresentation(num, 8, '1s');
       const rep8_2s = getRepresentation(num, 8, '2s');
       document.getElementById('rep-1s-8').textContent = rep8_1s.binary;
       document.getElementById('rep-2s-8').textContent = rep8_2s.binary;
     }
 
-    function copyToClipboard(id) {
-      const text = document.getElementById(id).textContent;
-      navigator.clipboard.writeText(text);
+    function copyToClipboard(elementId, hintId) {
+      const text = document.getElementById(elementId).textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        const hint = document.getElementById(hintId);
+        if (hint) {
+          const original = hint.textContent;
+          hint.textContent = "Copied!";
+          setTimeout(() => hint.textContent = original, 1200);
+        }
+      });
     }
 
     // --- Calculator Keypad Functions ---
@@ -856,7 +949,7 @@ Expected Math Value: ${n1} ${op} ${n2} = ${trueResult}</div>
     // Initialize
     changeCalcBase(2);
     convertBases();
-    solveArithmetic(); // run sample question on start
+    solveArithmetic();
   </script>
 </body>
 </html>
