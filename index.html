@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Digital Logic & Multi-Base Solver</title>
+  <title>Digital Logic & Code Solver</title>
   <style>
     :root {
       --bg-main: #0c0e17;
@@ -41,7 +41,7 @@
 
     .container {
       width: 100%;
-      max-width: 820px;
+      max-width: 840px;
     }
 
     header {
@@ -243,7 +243,7 @@
       background: var(--accent-hover);
     }
 
-    /* Live Output Boxes */
+    /* Converter Output Boxes */
     .converter-outputs {
       display: grid;
       grid-template-columns: 1fr;
@@ -282,14 +282,13 @@
       word-break: break-all;
     }
 
-    /* Step-by-Step Solution Box */
+    /* Step Solution Container */
     .solution-box {
       background: #0f111c;
       border: 1px solid var(--border);
       border-radius: 12px;
       padding: 14px 12px;
       margin-top: 14px;
-      display: none;
     }
 
     .step {
@@ -343,7 +342,7 @@
     .badge-ok { background: #9ece6a22; color: var(--success); border: 1px solid #9ece6a66; }
     .badge-warn { background: #f7768e22; color: var(--danger); border: 1px solid #f7768e66; }
 
-    /* Code Table for BCD, Excess-3, 2421 */
+    /* Tables */
     .table-responsive {
       width: 100%;
       overflow-x: auto;
@@ -464,13 +463,16 @@
   <div class="container">
     <header>
       <h1>🧮 Digital Logic & Code Solver</h1>
-      <p>BCD (8421) • Excess-3 • 2421 Code • 1's/2's Complement • Base Converter</p>
+      <p>Gray ⇄ Binary • BCD • Excess-3 • 2421 • 1's/2's Complement • Multi-Base</p>
     </header>
 
     <!-- Mobile Scrollable Tabs -->
     <div class="tabs-wrapper">
       <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab('codes')">
+        <button class="tab-btn active" onclick="switchTab('gray')">
+          <span>⚡</span> Gray ⇄ Binary
+        </button>
+        <button class="tab-btn" onclick="switchTab('codes')">
           <span>📊</span> BCD / Excess-3 / 2421
         </button>
         <button class="tab-btn" onclick="switchTab('arithmetic')">
@@ -485,16 +487,54 @@
       </div>
     </div>
 
-    <!-- TAB 1: BCD, Excess-3, 2421, Gray Code Converter & Reference Table -->
-    <div id="tab-codes" class="tab-content active">
+    <!-- TAB 1: Gray Code to Binary & Vice-Versa with Steps -->
+    <div id="tab-gray" class="tab-content active">
+      <div class="card">
+        <div class="card-title">Binary ⇄ Gray Code Converter (Step-by-Step)</div>
+        <div class="card-subtitle">
+          Binary to Gray Code (Adjacent XOR) aur Gray Code to Binary (Diagonal XOR) steps ke sath solve karo.
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Conversion Direction</label>
+            <select id="gray-mode" onchange="solveGrayConversion()">
+              <option value="b2g" selected>Binary to Gray Code</option>
+              <option value="g2b">Gray Code to Binary</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label id="gray-input-label">Enter Binary Sequence (e.g. 10110)</label>
+            <input type="text" id="gray-input" value="10110" oninput="solveGrayConversion()" inputmode="numeric" placeholder="Enter 0s and 1s">
+          </div>
+        </div>
+
+        <div class="conv-box" style="margin-top: 10px;">
+          <div class="conv-box-header">
+            <span id="gray-result-title">RESULT (GRAY CODE)</span>
+            <span id="copy-gray-res-hint" style="color:var(--accent); cursor:pointer;" onclick="copyToClipboard('gray-result-val', 'copy-gray-res-hint')">Copy</span>
+          </div>
+          <div class="conv-box-val" id="gray-result-val">11101</div>
+        </div>
+
+        <!-- Detailed Steps Viewer -->
+        <div class="solution-box" style="display: block;">
+          <h3 style="color: #7aa2f7; font-size: 0.95rem; margin-bottom: 10px;">Derivation / Step-by-Step XOR Logic</h3>
+          <div id="gray-steps-output" class="code-preview"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: BCD, Excess-3, 2421 Code Converter & Table -->
+    <div id="tab-codes" class="tab-content">
       <div class="card">
         <div class="card-title">Decimal to Binary Codes Converter</div>
         <div class="card-subtitle">
-          Notebook table: Converts any Decimal number to <b>BCD (8421)</b>, <b>Excess-3 (XS-3)</b>, <b>2421 Code</b>, and <b>Gray Code</b>.
+          Notebook table: Converts Decimal to <b>BCD (8421)</b>, <b>Excess-3 (XS-3)</b>, <b>2421 Code</b>, and <b>Gray Code</b>.
         </div>
 
         <div class="form-group">
-          <label>Enter Any Decimal Number (e.g. 5, 27, 894):</label>
+          <label>Enter Any Decimal Number (e.g. 7, 25, 894):</label>
           <input type="number" id="code-dec-input" value="7" oninput="solveDecimalCodes()" inputmode="numeric">
         </div>
 
@@ -505,7 +545,7 @@
               <span id="copy-bcd-hint" style="color:var(--accent); cursor:pointer;" onclick="copyToClipboard('code-res-bcd', 'copy-bcd-hint')">Copy</span>
             </div>
             <div class="conv-box-val" id="code-res-bcd">0111</div>
-            <div style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;" id="code-note-bcd">8421 Weighted representation</div>
+            <div style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;">8421 Weighted representation</div>
           </div>
 
           <div class="conv-box">
@@ -514,7 +554,7 @@
               <span id="copy-xs3-hint" style="color:var(--accent); cursor:pointer;" onclick="copyToClipboard('code-res-xs3', 'copy-xs3-hint')">Copy</span>
             </div>
             <div class="conv-box-val" id="code-res-xs3">1010</div>
-            <div style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;" id="code-note-xs3">Each digit + 3 in binary</div>
+            <div style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;">Each digit + 3 in binary</div>
           </div>
 
           <div class="conv-box">
@@ -523,7 +563,7 @@
               <span id="copy-2421-hint" style="color:var(--accent); cursor:pointer;" onclick="copyToClipboard('code-res-2421', 'copy-2421-hint')">Copy</span>
             </div>
             <div class="conv-box-val" id="code-res-2421">1101</div>
-            <div style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;" id="code-note-2421">Self-complementary weighted code</div>
+            <div style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;">Self-complementary weighted code</div>
           </div>
 
           <div class="conv-box">
@@ -548,16 +588,14 @@
                   <th>2-4-2-1 Code</th>
                 </tr>
               </thead>
-              <tbody id="ref-table-body">
-                <!-- Dynamically populated 0 to 9 -->
-              </tbody>
+              <tbody id="ref-table-body"></tbody>
             </table>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- TAB 2: Step-by-Step Complement Arithmetic Solver -->
+    <!-- TAB 3: Step-by-Step Complement Arithmetic Solver -->
     <div id="tab-arithmetic" class="tab-content">
       <div class="card">
         <div class="card-title">Solve Signed Binary Arithmetic</div>
@@ -603,7 +641,7 @@
 
         <button class="btn-action" onclick="solveArithmetic()">⚡ Step-by-Step Solve Karo</button>
 
-        <div id="arith-solution" class="solution-box">
+        <div id="arith-solution" class="solution-box" style="display:none;">
           <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 12px;">
             <h3 style="color: #7aa2f7; font-size: 0.95rem;">Detailed Step-by-Step Solution</h3>
             <span id="overflow-badge"></span>
@@ -613,7 +651,7 @@
       </div>
     </div>
 
-    <!-- TAB 3: Universal Base Converter -->
+    <!-- TAB 4: Universal Base Converter -->
     <div id="tab-converter" class="tab-content">
       <div class="card">
         <div class="card-title">Universal Base Converter (Dec, Bin, Oct, Hex)</div>
@@ -685,7 +723,7 @@
       </div>
     </div>
 
-    <!-- TAB 4: Programmer Keypad Calculator -->
+    <!-- TAB 5: Programmer Keypad Calculator -->
     <div id="tab-calc" class="tab-content">
       <div class="calc-wrapper">
         <div class="card">
@@ -751,8 +789,72 @@
       document.getElementById('tab-' + tabId).classList.add('active');
     }
 
+    // --- Gray Code ⇄ Binary Solver ---
+    function solveGrayConversion() {
+      const mode = document.getElementById('gray-mode').value;
+      const rawInput = document.getElementById('gray-input').value.trim();
+      const inputLabel = document.getElementById('gray-input-label');
+      const resultTitle = document.getElementById('gray-result-title');
+      const resValElem = document.getElementById('gray-result-val');
+      const stepsElem = document.getElementById('gray-steps-output');
+
+      if (mode === 'b2g') {
+        inputLabel.textContent = "Enter Binary Sequence (e.g. 10110)";
+        resultTitle.textContent = "RESULT (GRAY CODE)";
+      } else {
+        inputLabel.textContent = "Enter Gray Code Sequence (e.g. 11101)";
+        resultTitle.textContent = "RESULT (BINARY SEQUENCE)";
+      }
+
+      if (!rawInput || !/^[01]+$/.test(rawInput)) {
+        resValElem.textContent = "Invalid (Enter 0s & 1s only)";
+        stepsElem.textContent = "Please enter a valid sequence containing only 0 and 1.";
+        return;
+      }
+
+      const bits = rawInput;
+      const n = bits.length;
+
+      if (mode === 'b2g') {
+        // Binary to Gray: G[0] = B[0], G[i] = B[i-1] XOR B[i]
+        let gray = [bits[0]];
+        let steps = `Binary Input = ${bits}\n\n`;
+        steps += `Step 1 (MSB): G[0] = B[0] = ${bits[0]}\n`;
+
+        for (let i = 1; i < n; i++) {
+          const bPrev = parseInt(bits[i - 1], 10);
+          const bCurr = parseInt(bits[i], 10);
+          const gBit = bPrev ^ bCurr;
+          gray.push(gBit);
+          steps += `Step ${i + 1}: G[${i}] = B[${i-1}] ⊕ B[${i}] = ${bPrev} ⊕ ${bCurr} = ${gBit}\n`;
+        }
+
+        const grayStr = gray.join('');
+        resValElem.textContent = grayStr;
+        steps += `\nFinal Gray Code = ${grayStr}`;
+        stepsElem.textContent = steps;
+      } else {
+        // Gray to Binary: B[0] = G[0], B[i] = B[i-1] XOR G[i]
+        let binary = [bits[0]];
+        let steps = `Gray Code Input = ${bits}\n\n`;
+        steps += `Step 1 (MSB): B[0] = G[0] = ${bits[0]}\n`;
+
+        for (let i = 1; i < n; i++) {
+          const bPrev = binary[i - 1];
+          const gCurr = parseInt(bits[i], 10);
+          const bBit = bPrev ^ gCurr;
+          binary.push(bBit);
+          steps += `Step ${i + 1}: B[${i}] = B[${i-1}] ⊕ G[${i}] = ${bPrev} ⊕ ${gCurr} = ${bBit}\n`;
+        }
+
+        const binStr = binary.join('');
+        resValElem.textContent = binStr;
+        steps += `\nFinal Binary Sequence = ${binStr}`;
+        stepsElem.textContent = steps;
+      }
+    }
+
     // --- Decimal Codes Logic (BCD, Excess-3, 2421, Gray) ---
-    // Notebook standard 2421 mapping (self-complementary)
     const code2421Map = {
       0: "0000",
       1: "0001",
@@ -1123,6 +1225,7 @@ Expected Math Value: ${n1} ${op} ${n2} = ${trueResult}</div>
     }
 
     // Run on start
+    solveGrayConversion();
     populateReferenceTable();
     solveDecimalCodes();
     changeCalcBase(2);
