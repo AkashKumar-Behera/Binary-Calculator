@@ -35,43 +35,43 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 16px 12px;
+      padding: 14px 10px;
       overflow-x: hidden;
     }
 
     .container {
       width: 100%;
-      max-width: 760px;
+      max-width: 820px;
     }
 
     header {
       text-align: center;
-      margin-bottom: 16px;
-      padding: 0 8px;
+      margin-bottom: 14px;
+      padding: 0 4px;
     }
 
     header h1 {
-      font-size: clamp(1.3rem, 5vw, 1.8rem);
+      font-size: clamp(1.25rem, 5vw, 1.75rem);
       font-weight: 800;
       color: #bb9af7;
       line-height: 1.25;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
 
     header p {
       color: var(--text-muted);
-      font-size: clamp(0.75rem, 3vw, 0.9rem);
-      line-height: 1.4;
+      font-size: clamp(0.72rem, 3vw, 0.88rem);
+      line-height: 1.35;
     }
 
-    /* Mobile First Navigation Pills */
+    /* Mobile Responsive Scrollable Tabs */
     .tabs-wrapper {
       width: 100%;
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
-      margin-bottom: 16px;
-      padding: 2px 0;
+      margin-bottom: 14px;
+      padding-bottom: 2px;
     }
     .tabs-wrapper::-webkit-scrollbar {
       display: none;
@@ -84,24 +84,18 @@
       border-radius: 12px;
       border: 1px solid var(--border);
       gap: 4px;
-      min-width: 100%;
       width: max-content;
-    }
-
-    @media (min-width: 540px) {
-      .tabs {
-        width: 100%;
-      }
+      min-width: 100%;
     }
 
     .tab-btn {
       flex: 1;
-      padding: 10px 14px;
+      padding: 9px 12px;
       background: transparent;
       border: none;
       color: var(--text-muted);
       font-weight: 600;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       border-radius: 9px;
       cursor: pointer;
       transition: all 0.2s ease;
@@ -114,7 +108,7 @@
 
     .tab-btn.active {
       background: var(--accent);
-      color: #0f111a;
+      color: #0c0e17;
       box-shadow: 0 2px 10px rgba(122, 162, 247, 0.35);
       font-weight: 700;
     }
@@ -131,15 +125,15 @@
     .card {
       background: var(--bg-card);
       border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 18px 14px;
+      border-radius: 14px;
+      padding: 16px 14px;
       box-shadow: 0 6px 20px rgba(0,0,0,0.4);
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
 
     @media(min-width: 600px) {
       .card {
-        padding: 24px 20px;
+        padding: 22px 18px;
       }
     }
 
@@ -147,8 +141,8 @@
       font-size: 1.05rem;
       font-weight: 700;
       color: var(--accent);
-      margin-bottom: 6px;
-      line-height: 1.35;
+      margin-bottom: 4px;
+      line-height: 1.3;
     }
 
     .card-subtitle {
@@ -160,7 +154,7 @@
 
     /* Forms & Inputs */
     .form-group {
-      margin-bottom: 14px;
+      margin-bottom: 12px;
       width: 100%;
     }
 
@@ -169,27 +163,27 @@
       font-size: 0.72rem;
       font-weight: 700;
       color: #9aa5ce;
-      margin-bottom: 6px;
+      margin-bottom: 5px;
       text-transform: uppercase;
-      letter-spacing: 0.6px;
+      letter-spacing: 0.5px;
     }
 
     input, select {
       width: 100%;
       background: var(--bg-input);
       border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 11px 12px;
+      border-radius: 9px;
+      padding: 10px 12px;
       color: #fff;
       font-size: 0.95rem;
       font-family: 'Consolas', monospace;
       outline: none;
       transition: all 0.2s;
-      appearance: none;
-      -webkit-appearance: none;
     }
 
     select {
+      appearance: none;
+      -webkit-appearance: none;
       background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%237aa2f7%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
       background-repeat: no-repeat;
       background-position: right 12px top 50%;
@@ -202,7 +196,6 @@
       box-shadow: 0 0 0 2px rgba(122, 162, 247, 0.2);
     }
 
-    /* Responsive Grid Layouts */
     .grid-2 {
       display: grid;
       grid-template-columns: 1fr;
@@ -229,11 +222,11 @@
 
     .btn-action {
       background: var(--accent);
-      color: #0f111a;
+      color: #0c0e17;
       border: none;
-      padding: 13px 20px;
+      padding: 12px 18px;
       font-weight: 700;
-      border-radius: 10px;
+      border-radius: 9px;
       cursor: pointer;
       transition: all 0.2s;
       width: 100%;
@@ -250,12 +243,12 @@
       background: var(--accent-hover);
     }
 
-    /* Live Converter Output Boxes */
+    /* Live Output Boxes */
     .converter-outputs {
       display: grid;
       grid-template-columns: 1fr;
       gap: 10px;
-      margin-top: 14px;
+      margin-top: 12px;
     }
 
     @media(min-width: 480px) {
@@ -267,9 +260,8 @@
     .conv-box {
       background: var(--bg-input);
       border: 1px solid var(--border);
-      border-radius: 12px;
+      border-radius: 10px;
       padding: 12px 14px;
-      position: relative;
     }
 
     .conv-box-header {
@@ -280,7 +272,6 @@
       font-size: 0.72rem;
       color: var(--text-muted);
       font-weight: 700;
-      letter-spacing: 0.5px;
     }
 
     .conv-box-val {
@@ -291,20 +282,14 @@
       word-break: break-all;
     }
 
-    /* Step-by-Step Solution Viewer */
+    /* Step-by-Step Solution Box */
     .solution-box {
       background: #0f111c;
       border: 1px solid var(--border);
-      border-radius: 14px;
+      border-radius: 12px;
       padding: 14px 12px;
-      margin-top: 16px;
+      margin-top: 14px;
       display: none;
-    }
-
-    @media(min-width: 600px) {
-      .solution-box {
-        padding: 18px 16px;
-      }
     }
 
     .step {
@@ -353,11 +338,57 @@
       border-radius: 6px;
       font-size: 0.72rem;
       font-weight: 700;
-      letter-spacing: 0.4px;
     }
 
     .badge-ok { background: #9ece6a22; color: var(--success); border: 1px solid #9ece6a66; }
     .badge-warn { background: #f7768e22; color: var(--danger); border: 1px solid #f7768e66; }
+
+    /* Code Table for BCD, Excess-3, 2421 */
+    .table-responsive {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin-top: 14px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: center;
+      font-size: 0.85rem;
+      background: var(--bg-input);
+    }
+
+    th, td {
+      padding: 10px 8px;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    th {
+      background: #181c2f;
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background: #191d31;
+    }
+
+    td.code-cell {
+      font-family: 'Consolas', monospace;
+      color: #e0af68;
+      font-weight: 600;
+    }
 
     /* Calculator UI */
     .calc-wrapper {
@@ -425,21 +456,24 @@
 
     .btn-op { background: #2b334d; color: #7dcfff; }
     .btn-clear { background: #f7768e22; color: var(--danger); border-color: #f7768e55; }
-    .btn-eq { background: var(--accent); color: #0f111a; font-weight: 800; }
+    .btn-eq { background: var(--accent); color: #0c0e17; font-weight: 800; }
   </style>
 </head>
 <body>
 
   <div class="container">
     <header>
-      <h1>🧮 Digital Logic & Multi-Base Solver</h1>
-      <p>Convert Base (Dec/Bin/Oct/Hex) & Solve 1's/2's Complement Addition/Subtraction with Full Steps</p>
+      <h1>🧮 Digital Logic & Code Solver</h1>
+      <p>BCD (8421) • Excess-3 • 2421 Code • 1's/2's Complement • Base Converter</p>
     </header>
 
-    <!-- Mobile Scrollable / Desktop Flex Tabs -->
+    <!-- Mobile Scrollable Tabs -->
     <div class="tabs-wrapper">
       <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab('arithmetic')">
+        <button class="tab-btn active" onclick="switchTab('codes')">
+          <span>📊</span> BCD / Excess-3 / 2421
+        </button>
+        <button class="tab-btn" onclick="switchTab('arithmetic')">
           <span>📝</span> 1's & 2's Complement
         </button>
         <button class="tab-btn" onclick="switchTab('converter')">
@@ -451,12 +485,84 @@
       </div>
     </div>
 
-    <!-- TAB 1: Step-by-Step Complement Arithmetic Solver -->
-    <div id="tab-arithmetic" class="tab-content active">
+    <!-- TAB 1: BCD, Excess-3, 2421, Gray Code Converter & Reference Table -->
+    <div id="tab-codes" class="tab-content active">
+      <div class="card">
+        <div class="card-title">Decimal to Binary Codes Converter</div>
+        <div class="card-subtitle">
+          Notebook table: Converts any Decimal number to <b>BCD (8421)</b>, <b>Excess-3 (XS-3)</b>, <b>2421 Code</b>, and <b>Gray Code</b>.
+        </div>
+
+        <div class="form-group">
+          <label>Enter Any Decimal Number (e.g. 5, 27, 894):</label>
+          <input type="number" id="code-dec-input" value="7" oninput="solveDecimalCodes()" inputmode="numeric">
+        </div>
+
+        <div class="converter-outputs">
+          <div class="conv-box">
+            <div class="conv-box-header">
+              <span>BCD CODE (8421)</span>
+              <span id="copy-bcd-hint" style="color:var(--accent); cursor:pointer;" onclick="copyToClipboard('code-res-bcd', 'copy-bcd-hint')">Copy</span>
+            </div>
+            <div class="conv-box-val" id="code-res-bcd">0111</div>
+            <div style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;" id="code-note-bcd">8421 Weighted representation</div>
+          </div>
+
+          <div class="conv-box">
+            <div class="conv-box-header">
+              <span>EXCESS-3 CODE (XS-3)</span>
+              <span id="copy-xs3-hint" style="color:var(--accent); cursor:pointer;" onclick="copyToClipboard('code-res-xs3', 'copy-xs3-hint')">Copy</span>
+            </div>
+            <div class="conv-box-val" id="code-res-xs3">1010</div>
+            <div style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;" id="code-note-xs3">Each digit + 3 in binary</div>
+          </div>
+
+          <div class="conv-box">
+            <div class="conv-box-header">
+              <span>2-4-2-1 CODE (AIKEN)</span>
+              <span id="copy-2421-hint" style="color:var(--accent); cursor:pointer;" onclick="copyToClipboard('code-res-2421', 'copy-2421-hint')">Copy</span>
+            </div>
+            <div class="conv-box-val" id="code-res-2421">1101</div>
+            <div style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;" id="code-note-2421">Self-complementary weighted code</div>
+          </div>
+
+          <div class="conv-box">
+            <div class="conv-box-header">
+              <span>GRAY CODE</span>
+              <span id="copy-gray-hint" style="color:var(--accent); cursor:pointer;" onclick="copyToClipboard('code-res-gray', 'copy-gray-hint')">Copy</span>
+            </div>
+            <div class="conv-box-val" id="code-res-gray">0100</div>
+            <div style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;">Reflected binary unit-distance code</div>
+          </div>
+        </div>
+
+        <div style="margin-top: 14px;" class="card">
+          <div class="card-title" style="font-size: 0.92rem;">📘 Notebook Standard Reference Table (0 to 9)</div>
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>Decimal Digit</th>
+                  <th>BCD Code (8421)</th>
+                  <th>Excess-3 Code</th>
+                  <th>2-4-2-1 Code</th>
+                </tr>
+              </thead>
+              <tbody id="ref-table-body">
+                <!-- Dynamically populated 0 to 9 -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: Step-by-Step Complement Arithmetic Solver -->
+    <div id="tab-arithmetic" class="tab-content">
       <div class="card">
         <div class="card-title">Solve Signed Binary Arithmetic</div>
         <div class="card-subtitle">
-          Solve exam questions like <code>(-6) + (-2) using 4 bits</code>, <code>(-5) + 2</code>, etc.
+          Notebook questions: <code>(-6) + (-2) using 4 bits</code>, <code>(-5) + 2</code>, etc.
         </div>
 
         <div class="grid-2">
@@ -497,9 +603,8 @@
 
         <button class="btn-action" onclick="solveArithmetic()">⚡ Step-by-Step Solve Karo</button>
 
-        <!-- Solution Container -->
         <div id="arith-solution" class="solution-box">
-          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 14px;">
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 12px;">
             <h3 style="color: #7aa2f7; font-size: 0.95rem;">Detailed Step-by-Step Solution</h3>
             <span id="overflow-badge"></span>
           </div>
@@ -508,11 +613,11 @@
       </div>
     </div>
 
-    <!-- TAB 2: Multi-Base Converter -->
+    <!-- TAB 3: Universal Base Converter -->
     <div id="tab-converter" class="tab-content">
       <div class="card">
         <div class="card-title">Universal Base Converter (Dec, Bin, Oct, Hex)</div>
-        <div class="card-subtitle">Convert instantaneously across any numeral systems.</div>
+        <div class="card-subtitle">Instant base conversions with copy shortcut.</div>
 
         <div class="grid-2">
           <div class="form-group">
@@ -530,7 +635,6 @@
           </div>
         </div>
 
-        <!-- Live Conversion Results -->
         <div class="converter-outputs">
           <div class="conv-box">
             <div class="conv-box-header">
@@ -581,7 +685,7 @@
       </div>
     </div>
 
-    <!-- TAB 3: Programmer Keypad Calculator -->
+    <!-- TAB 4: Programmer Keypad Calculator -->
     <div id="tab-calc" class="tab-content">
       <div class="calc-wrapper">
         <div class="card">
@@ -600,7 +704,6 @@
             <div class="calc-val" id="calc-display">0</div>
           </div>
 
-          <!-- Buttons -->
           <div class="keypad">
             <button class="btn-key btn-hex" onclick="calcInput('A')">A</button>
             <button class="btn-key btn-hex" onclick="calcInput('B')">B</button>
@@ -646,6 +749,79 @@
 
       event.currentTarget.classList.add('active');
       document.getElementById('tab-' + tabId).classList.add('active');
+    }
+
+    // --- Decimal Codes Logic (BCD, Excess-3, 2421, Gray) ---
+    // Notebook standard 2421 mapping (self-complementary)
+    const code2421Map = {
+      0: "0000",
+      1: "0001",
+      2: "0010",
+      3: "0011",
+      4: "0100",
+      5: "1011",
+      6: "1100",
+      7: "1101",
+      8: "1110",
+      9: "1111"
+    };
+
+    function digitToBCD(d) {
+      return d.toString(2).padStart(4, '0');
+    }
+
+    function digitToExcess3(d) {
+      return (d + 3).toString(2).padStart(4, '0');
+    }
+
+    function digitTo2421(d) {
+      return code2421Map[d] || "0000";
+    }
+
+    function decimalToGray(n) {
+      if (n < 0) return "N/A";
+      const gray = n ^ (n >> 1);
+      return gray.toString(2).padStart(4, '0');
+    }
+
+    function solveDecimalCodes() {
+      const valStr = document.getElementById('code-dec-input').value.trim();
+      if (!valStr || isNaN(parseInt(valStr, 10))) {
+        document.getElementById('code-res-bcd').textContent = "-";
+        document.getElementById('code-res-xs3').textContent = "-";
+        document.getElementById('code-res-2421').textContent = "-";
+        document.getElementById('code-res-gray').textContent = "-";
+        return;
+      }
+
+      const num = parseInt(valStr, 10);
+      const digits = Math.abs(num).toString().split('').map(Number);
+
+      const bcdResult = digits.map(d => digitToBCD(d)).join(' ');
+      const xs3Result = digits.map(d => digitToExcess3(d)).join(' ');
+      const AikenResult = digits.map(d => digitTo2421(d)).join(' ');
+      const grayResult = decimalToGray(Math.abs(num));
+
+      document.getElementById('code-res-bcd').textContent = bcdResult;
+      document.getElementById('code-res-xs3').textContent = xs3Result;
+      document.getElementById('code-res-2421').textContent = AikenResult;
+      document.getElementById('code-res-gray').textContent = grayResult;
+    }
+
+    function populateReferenceTable() {
+      const tbody = document.getElementById('ref-table-body');
+      let html = '';
+      for (let i = 0; i <= 9; i++) {
+        html += `
+          <tr>
+            <td style="font-weight:700; color:var(--text);">${i}</td>
+            <td class="code-cell">${digitToBCD(i)}</td>
+            <td class="code-cell">${digitToExcess3(i)}</td>
+            <td class="code-cell">${digitTo2421(i)}</td>
+          </tr>
+        `;
+      }
+      tbody.innerHTML = html;
     }
 
     // --- 1's & 2's Complement Helper Functions ---
@@ -946,7 +1122,9 @@ Expected Math Value: ${n1} ${op} ${n2} = ${trueResult}</div>
       updateCalcDisplay();
     }
 
-    // Initialize
+    // Run on start
+    populateReferenceTable();
+    solveDecimalCodes();
     changeCalcBase(2);
     convertBases();
     solveArithmetic();
