@@ -907,10 +907,20 @@
       const totalDigits = digits1.length;
 
       // STAGE 1: Pure Binary Addition of Nibbles (Without correction first, exact like notebook)
+      // STAGE 1: Pure Binary Addition of nibbles (as written in notebook)
+      // In notebook: 1001 + 0010 = 1011 (or with carry), but notebook wrote:
+      //   1001 1000
+      // + 0010 1000
+      // ------------
+      //   1100 0000   (8+8 = 16 => 0000 with carry 1 into next nibble: 9+2+1 = 12 => 1100)
+      // Then: 12 > 9 then add 0110:
+      //   1100 0000
+      // + 0110 0110
+      // ------------
+      // 0001 0010 0110 => 1  2  6
       let stage1Sums = [];
-      let stage1Carries = [];
       let carry1 = 0;
-      let conditions = [];
+      let rawDecSums = [];
 
       for (let i = totalDigits - 1; i >= 0; i--) {
         const d1 = digits1[i];
@@ -922,40 +932,53 @@
         const rawDec = d1 + d2 + carry1;
 
         stage1Sums.unshift(addRes.sum);
-        stage1Carries.unshift(addRes.carryOut);
+        rawDecSums.unshift(rawDec);
 
-        // Check condition: if sum > 9 or carry generated
-        if (rawDec > 9 || addRes.carryOut === 1) {
-          conditions.unshift({ index: i, rawDec: rawDec, reason: `${rawDec} > 9 then add 0110` });
-        } else {
-          conditions.unshift(null);
-        }
-
+        // Check if carry out generated from 4-bit addition
         carry1 = addRes.carryOut;
       }
 
-      // STAGE 2: Correcting by adding 0110 where invalid
+      // Check conditions: In notebook, since 8+8 generated carry out, right nibble needed 0110.
+      // Left nibble is 12 (1100), 12 > 9 so it also needed 0110.
+      let conditions = [];
       let stage2Addends = [];
-      let anyCorrection = conditions.some(c => c !== null);
+      let anyCorrection = false;
 
       for (let i = 0; i < totalDigits; i++) {
-        if (conditions[i] !== null) {
+        const rawDec = rawDecSums[i];
+        const rawNibbleVal = parseInt(stage1Sums[i], 2);
+        // Condition: if rawDec >= 10 OR rawNibbleVal > 9
+        if (rawDec >= 10 || rawNibbleVal > 9) {
+          anyCorrection = true;
           stage2Addends.push("0110");
+          conditions.push({ index: i, reason: `${rawDec > 9 ? rawDec : rawNibbleVal} > 9 then add 0110` });
         } else {
           stage2Addends.push("0000");
+          conditions.push(null);
         }
       }
 
-      // Perform stage 2 binary addition
+      // STAGE 2: Add 0110 to the stage 1 sum directly (exact like notebook columns)
+      // Right column: 0000 + 0110 = 0110 (6) (no carry into left during +0110)
+      // Left column:  1100 + 0110 = 0010 with carry 1 (0001) => 0001 0010 0110 => 1 2 6
       let finalBcdNibbles = [];
       let carry2 = 0;
       for (let i = totalDigits - 1; i >= 0; i--) {
         const s1 = stage1Sums[i];
         const addend = stage2Addends[i];
-        const res = add4BitBinary(s1, addend, carry2);
-        finalBcdNibbles.unshift(res.sum);
-        // If 0110 was added OR carryout was generated, next carry is generated
-        carry2 = (addend === "0110" || res.carryOut === 1) ? 1 : res.carryOut;
+        const res = add4BitBinary(s1, addend, 0); // column-wise correction as in notebook
+        
+        let nibbleWithCarry = res.sum;
+        let cOut = res.carryOut;
+
+        if (carry2 > 0) {
+          const withC = add4BitBinary(nibbleWithCarry, "0001", 0);
+          nibbleWithCarry = withC.sum;
+          cOut = cOut || withC.carryOut;
+        }
+
+        finalBcdNibbles.unshift(nibbleWithCarry);
+        carry2 = cOut;
       }
 
       let extraCarry = false;
