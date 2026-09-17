@@ -244,7 +244,7 @@
       border-color: var(--accent);
     }
 
-    /* Visual Notebook Board (Like lined notebook) */
+    /* Visual Notebook Sheet */
     .notebook-sheet {
       background: #090b14;
       border: 1px solid #2b324c;
@@ -269,8 +269,8 @@
     }
 
     .notebook-layout-pre {
-      font-size: clamp(0.85rem, 2.5vw, 1.05rem);
-      line-height: 1.6;
+      font-size: clamp(0.85rem, 2.7vw, 1.05rem);
+      line-height: 1.65;
       color: #7dcfff;
       white-space: pre;
     }
@@ -321,32 +321,6 @@
       border-radius: 12px;
       padding: 14px 12px;
       margin-top: 14px;
-    }
-
-    .step {
-      margin-bottom: 14px;
-      padding-bottom: 14px;
-      border-bottom: 1px dashed #24293e;
-    }
-
-    .step:last-child {
-      border-bottom: none;
-      margin-bottom: 0;
-      padding-bottom: 0;
-    }
-
-    .step-num {
-      color: #bb9af7;
-      font-weight: 700;
-      font-size: 0.88rem;
-      margin-bottom: 4px;
-    }
-
-    .step-desc {
-      color: var(--text);
-      font-size: 0.85rem;
-      margin-bottom: 6px;
-      line-height: 1.4;
     }
 
     .code-preview {
@@ -484,7 +458,7 @@
   <div class="container">
     <header>
       <h1>🧮 Digital Logic & Code Solver</h1>
-      <p>BCD Addition (Integers & Decimals) • Gray ⇄ Binary • BCD/XS-3/2421 • Complements</p>
+      <p>BCD Addition (Notebook Two-Stage Flow) • Gray ⇄ Binary • BCD/XS-3/2421 • Complements</p>
     </header>
 
     <!-- Mobile Scrollable Tabs -->
@@ -511,31 +485,31 @@
       </div>
     </div>
 
-    <!-- TAB 1: BCD Addition with Exact Notebook Layout (e.g. 46.4 + 42.2 & 98 + 28) -->
+    <!-- TAB 1: BCD Addition Exact 2-Stage Notebook Layout -->
     <div id="tab-bcd-add" class="tab-content active">
       <div class="card">
-        <div class="card-title">BCD (8421) Addition (with Decimal Point Support)</div>
+        <div class="card-title">BCD (8421) Addition (Notebook Two-Stage Solution)</div>
         <div class="card-subtitle">
-          Exact notebook layout: supports decimal points (e.g. <code>46.4 + 42.2</code>) and integer additions (e.g. <code>98 + 28</code>).
+          Exact match for your notebook page: Stage 1 (Initial Addition) ➔ Condition check (e.g. <code>12 > 9 then add 0110</code>) ➔ Stage 2 (Correction Addition) with bracketed decimal indicators.
         </div>
 
         <!-- Notebook Presets -->
         <div style="font-size:0.75rem; color:var(--text-muted); margin-bottom:6px;">NOTEBOOK QUESTIONS:</div>
         <div class="preset-btns">
-          <button class="preset-chip" onclick="loadBcdAddPreset('46.4', '42.2')">📓 46.4 + 42.2 (From Notebook Image)</button>
-          <button class="preset-chip" onclick="loadBcdAddPreset('98', '28')">📓 98 + 28 (From Notebook Image)</button>
+          <button class="preset-chip" onclick="loadBcdAddPreset('98', '28')">📓 98 + 28 (Page 2: 12 > 9 then add 0110)</button>
+          <button class="preset-chip" onclick="loadBcdAddPreset('46.4', '42.2')">📓 46.4 + 42.2 (Page 1: Valid Sum 88.6)</button>
+          <button class="preset-chip" onclick="loadBcdAddPreset('67', '53')">67 + 53 (Both Carry)</button>
           <button class="preset-chip" onclick="loadBcdAddPreset('5', '7')">5 + 7</button>
-          <button class="preset-chip" onclick="loadBcdAddPreset('67.5', '53.8')">67.5 + 53.8</button>
         </div>
 
         <div class="grid-2">
           <div class="form-group">
-            <label>Decimal Number 1 (e.g. 46.4, 98)</label>
-            <input type="text" id="bcd-add-n1" value="46.4" oninput="solveBcdAddition()" inputmode="decimal">
+            <label>Decimal Number 1 (e.g. 98, 46.4)</label>
+            <input type="text" id="bcd-add-n1" value="98" oninput="solveBcdAddition()" inputmode="decimal">
           </div>
           <div class="form-group">
-            <label>Decimal Number 2 (e.g. 42.2, 28)</label>
-            <input type="text" id="bcd-add-n2" value="42.2" oninput="solveBcdAddition()" inputmode="decimal">
+            <label>Decimal Number 2 (e.g. 28, 42.2)</label>
+            <input type="text" id="bcd-add-n2" value="28" oninput="solveBcdAddition()" inputmode="decimal">
           </div>
         </div>
 
@@ -545,30 +519,30 @@
               <span>FINAL BCD RESULT</span>
               <span id="copy-bcd-res-hint" style="color:var(--accent); cursor:pointer;" onclick="copyToClipboard('bcd-add-res-val', 'copy-bcd-res-hint')">Copy</span>
             </div>
-            <div class="conv-box-val" id="bcd-add-res-val">1000 1000 . 0110</div>
-            <div style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;" id="bcd-add-dec-val">Decimal: 46.4 + 42.2 = 88.6</div>
+            <div class="conv-box-val" id="bcd-add-res-val">0001 0010 0110</div>
+            <div style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;" id="bcd-add-dec-val">Decimal: 98 + 28 = 126</div>
           </div>
 
           <div class="conv-box">
             <div class="conv-box-header">
               <span>NOTEBOOK DECODING</span>
             </div>
-            <div class="conv-box-val" id="bcd-decoded-val" style="color:var(--success);">8  8  .  6</div>
-            <div style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;">Each nibble decoded to decimal</div>
+            <div class="conv-box-val" id="bcd-decoded-val" style="color:var(--success);">1    2    6</div>
+            <div style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;">Each 4-bit nibble decoded to digit</div>
           </div>
         </div>
 
-        <!-- Exact Notebook Visual Presentation -->
+        <!-- Exact Notebook Visual Presentation (Page 1 & 2 Layout) -->
         <div class="notebook-sheet">
           <div class="notebook-title">
-            <span>📝</span> Notebook Formatted Layout
+            <span>📝</span> Notebook Two-Stage Handwritten Layout
           </div>
           <div id="notebook-layout-view" class="notebook-layout-pre"></div>
         </div>
 
         <!-- Step-by-Step Details -->
         <div class="solution-box" style="display: block;">
-          <h3 style="color: #7aa2f7; font-size: 0.95rem; margin-bottom: 10px;">Detailed Step-by-Step BCD Addition</h3>
+          <h3 style="color: #7aa2f7; font-size: 0.95rem; margin-bottom: 10px;">Step-by-Step Explanation</h3>
           <div id="bcd-add-steps" class="code-preview"></div>
         </div>
       </div>
@@ -882,7 +856,7 @@
       document.getElementById('tab-' + tabId).classList.add('active');
     }
 
-    // --- BCD Addition Solver with Decimal Point Support ---
+    // --- BCD Addition Solver: Two-Stage Matching Notebook ---
     function loadBcdAddPreset(n1, n2) {
       document.getElementById('bcd-add-n1').value = n1;
       document.getElementById('bcd-add-n2').value = n2;
@@ -908,14 +882,12 @@
 
       if (!raw1 || !raw2 || isNaN(parseFloat(raw1)) || isNaN(parseFloat(raw2))) {
         document.getElementById('bcd-add-res-val').textContent = "Invalid Input";
-        document.getElementById('notebook-layout-view').textContent = "Please enter valid decimal numbers (e.g. 46.4 and 42.2).";
+        document.getElementById('notebook-layout-view').textContent = "Please enter valid numbers.";
         return;
       }
 
-      // Align integer and fractional parts
       const parts1 = raw1.split('.');
       const parts2 = raw2.split('.');
-
       const int1 = parts1[0];
       const int2 = parts2[0];
       const frac1 = parts1[1] || '';
@@ -929,69 +901,73 @@
       const paddedFrac1 = frac1.padEnd(maxFracLen, '0');
       const paddedFrac2 = frac2.padEnd(maxFracLen, '0');
 
-      let aligned1 = paddedInt1 + (maxFracLen > 0 ? '.' + paddedFrac1 : '');
-      let aligned2 = paddedInt2 + (maxFracLen > 0 ? '.' + paddedFrac2 : '');
-
       const hasDecimal = maxFracLen > 0;
-      const decIndex = hasDecimal ? maxIntLen : -1;
-
-      // Extract all digit characters
       const digits1 = (paddedInt1 + paddedFrac1).split('').map(Number);
       const digits2 = (paddedInt2 + paddedFrac2).split('').map(Number);
       const totalDigits = digits1.length;
 
-      let carryIn = 0;
-      let initialSumNibbles = [];
-      let finalBcdNibbles = [];
-      let correctionsApplied = [];
-      let stepsDetail = `BCD Addition Rules:\n- Add each digit (nibble) in binary.\n- If Sum > 9 or Carry = 1, add 0110 (6) to correct.\n\n`;
+      // STAGE 1: Pure Binary Addition of Nibbles (Without correction first, exact like notebook)
+      let stage1Sums = [];
+      let stage1Carries = [];
+      let carry1 = 0;
+      let conditions = [];
 
       for (let i = totalDigits - 1; i >= 0; i--) {
         const d1 = digits1[i];
         const d2 = digits2[i];
-        const bcd1 = d1.toString(2).padStart(4, '0');
-        const bcd2 = d2.toString(2).padStart(4, '0');
+        const b1 = d1.toString(2).padStart(4, '0');
+        const b2 = d2.toString(2).padStart(4, '0');
 
-        const step1 = add4BitBinary(bcd1, bcd2, carryIn);
-        const rawDec = d1 + d2 + carryIn;
-        initialSumNibbles.unshift(step1.sum);
+        const addRes = add4BitBinary(b1, b2, carry1);
+        const rawDec = d1 + d2 + carry1;
 
-        let finalNibble = step1.sum;
-        let nextCarry = step1.carryOut;
-        let neededCorrection = false;
+        stage1Sums.unshift(addRes.sum);
+        stage1Carries.unshift(addRes.carryOut);
 
-        stepsDetail += `Digit Position (Digits: ${d1} + ${d2} ${carryIn ? '+ carry 1' : ''}):\n`;
-        stepsDetail += `   ${bcd1}  (${d1})\n + ${bcd2}  (${d2})\n ---------\n   ${step1.sum}  (Raw dec: ${rawDec})\n`;
-
-        if (rawDec > 9 || step1.carryOut === 1) {
-          neededCorrection = true;
-          const corr = add4BitBinary(step1.sum, "0110", 0);
-          finalNibble = corr.sum;
-          nextCarry = 1;
-          stepsDetail += `   + 0110  (Correction +6 because sum > 9 or carry generated)\n ---------\n   ${finalNibble} (Carry propagated to next)\n\n`;
+        // Check condition: if sum > 9 or carry generated
+        if (rawDec > 9 || addRes.carryOut === 1) {
+          conditions.unshift({ index: i, rawDec: rawDec, reason: `${rawDec} > 9 then add 0110` });
         } else {
-          stepsDetail += `   Valid BCD, no correction needed.\n\n`;
-          nextCarry = 0;
+          conditions.unshift(null);
         }
 
-        correctionsApplied.unshift(neededCorrection);
-        finalBcdNibbles.unshift(finalNibble);
-        carryIn = nextCarry;
+        carry1 = addRes.carryOut;
       }
 
-      // Handle MSB carry
+      // STAGE 2: Correcting by adding 0110 where invalid
+      let stage2Addends = [];
+      let anyCorrection = conditions.some(c => c !== null);
+
+      for (let i = 0; i < totalDigits; i++) {
+        if (conditions[i] !== null) {
+          stage2Addends.push("0110");
+        } else {
+          stage2Addends.push("0000");
+        }
+      }
+
+      // Perform stage 2 binary addition
+      let finalBcdNibbles = [];
+      let carry2 = 0;
+      for (let i = totalDigits - 1; i >= 0; i--) {
+        const s1 = stage1Sums[i];
+        const addend = stage2Addends[i];
+        const res = add4BitBinary(s1, addend, carry2);
+        finalBcdNibbles.unshift(res.sum);
+        // If 0110 was added OR carryout was generated, next carry is generated
+        carry2 = (addend === "0110" || res.carryOut === 1) ? 1 : res.carryOut;
+      }
+
       let extraCarry = false;
-      if (carryIn === 1) {
+      if (carry2 === 1) {
         extraCarry = true;
-        initialSumNibbles.unshift("0000");
         finalBcdNibbles.unshift("0001");
-        correctionsApplied.unshift(false);
       }
 
-      // Format BCD representations
-      function formatNibbles(arr) {
+      // Format strings
+      function formatWithDec(arr, isPaddedExtra) {
         let res = [];
-        let offset = extraCarry ? 1 : 0;
+        let offset = isPaddedExtra ? 1 : 0;
         for (let i = 0; i < arr.length; i++) {
           if (hasDecimal && i === maxIntLen + offset) {
             res.push('.');
@@ -1001,50 +977,74 @@
         return res.join(' ');
       }
 
-      function formatDecimals(arr) {
-        let res = [];
-        let offset = extraCarry ? 1 : 0;
-        for (let i = 0; i < arr.length; i++) {
-          if (hasDecimal && i === maxIntLen + offset) {
-            res.push(' . ');
-          }
-          const dec = parseInt(arr[i], 2);
-          res.push(`  ${dec} `);
-        }
-        return res.join('  ');
-      }
-
-      const finalBcdStr = formatNibbles(finalBcdNibbles);
-      const decodedDecStr = formatDecimals(finalBcdNibbles);
       const decSum = (parseFloat(raw1) + parseFloat(raw2)).toString();
+      const finalBcdStr = formatWithDec(finalBcdNibbles, extraCarry);
+      const decodedDecDigits = finalBcdNibbles.map(b => parseInt(b, 2));
+
+      // Build bracketed decimal display like notebook: ⌊0001⌋ ⌊0010⌋ ⌊0110⌋ ➔ 1  2  6
+      let bracketDec = [];
+      let offset = extraCarry ? 1 : 0;
+      for (let i = 0; i < finalBcdNibbles.length; i++) {
+        if (hasDecimal && i === maxIntLen + offset) {
+          bracketDec.push('.');
+        }
+        bracketDec.push(` ${decodedDecDigits[i]}  `);
+      }
+      const bracketDecStr = bracketDec.join('  ');
 
       document.getElementById('bcd-add-res-val').textContent = finalBcdStr;
       document.getElementById('bcd-add-dec-val').textContent = `Decimal: ${raw1} + ${raw2} = ${decSum}`;
-      document.getElementById('bcd-decoded-val').textContent = decodedDecStr;
+      document.getElementById('bcd-decoded-val').textContent = bracketDecStr;
 
-      // Render Exact Notebook Format
-      const bcdRow1 = digits1.map((d, idx) => (hasDecimal && idx === maxIntLen ? '. ' : '') + d.toString(2).padStart(4, '0')).join(' ');
-      const bcdRow2 = digits2.map((d, idx) => (hasDecimal && idx === maxIntLen ? '. ' : '') + d.toString(2).padStart(4, '0')).join(' ');
-      const initSumRow = initialSumNibbles.map((b, idx) => (hasDecimal && idx === maxIntLen + (extraCarry ? 1 : 0) ? '. ' : '') + b).join(' ');
-      const finalSumRow = finalBcdStr;
+      // Render Exact Notebook Sheet View
+      const bcdRow1 = formatWithDec(digits1.map(d => d.toString(2).padStart(4, '0')), false);
+      const bcdRow2 = formatWithDec(digits2.map(d => d.toString(2).padStart(4, '0')), false);
+      const stage1SumRow = formatWithDec(stage1Sums, false);
 
-      let notebookView = `  ${raw1.padStart(6, ' ')}      ${bcdRow1}\n`;
+      let notebookView = `BCD Addition\n\n`;
+      notebookView += `  ${raw1.padStart(6, ' ')}      ${bcdRow1}\n`;
       notebookView += `+ ${raw2.padStart(6, ' ')}    + ${bcdRow2}\n`;
       notebookView += `--------    ${'-'.repeat(bcdRow1.length + 4)}\n`;
 
-      const anyCorr = correctionsApplied.some(Boolean);
-      if (anyCorr) {
-        notebookView += `             ${initSumRow}  (Raw binary sum)\n`;
-        const corrLine = correctionsApplied.map(c => c ? "0110" : "0000").join(' ');
-        notebookView += `           + ${corrLine}  (Correction +0110)\n`;
+      if (!anyCorrection) {
+        // Case like Page 1: 46.4 + 42.2 = 88.6 (Direct valid sum)
+        notebookView += `            ${stage1SumRow}\n`;
         notebookView += `            ${'-'.repeat(bcdRow1.length + 4)}\n`;
+        notebookView += `            ${bracketDecStr}\n`;
+      } else {
+        // Case like Page 2: 98 + 28 = 126 (Two-stage with "12 > 9 then add 0110")
+        notebookView += `            ${stage1SumRow}\n\n`;
+
+        // Condition arrow notes
+        const condNotes = conditions.filter(c => c !== null).map(c => c.reason).join(', ');
+        notebookView += `         ➔ ${condNotes}\n\n`;
+
+        // Stage 2 Addition Block
+        const stage2TopRow = stage1SumRow;
+        const stage2CorrRow = formatWithDec(stage2Addends, false);
+
+        notebookView += `            ${stage2TopRow}\n`;
+        notebookView += `          + ${stage2CorrRow}\n`;
+        notebookView += `            ${'-'.repeat(stage2TopRow.length + 4)}\n`;
+        notebookView += `       ${finalBcdStr}\n`;
+        notebookView += `       ${'-'.repeat(finalBcdStr.length)}\n`;
+        notebookView += `       ${bracketDecStr}\n`;
       }
 
-      notebookView += `  ${decSum.padStart(6, ' ')}      ${finalSumRow}\n`;
-      notebookView += `            ${decodedDecStr}\n`;
-
       document.getElementById('notebook-layout-view').textContent = notebookView;
-      document.getElementById('bcd-add-steps').textContent = stepsDetail;
+
+      // Explanation
+      let explanation = `Summary:\n`;
+      explanation += `1. Decimal operands: ${raw1} + ${raw2} = ${decSum}\n`;
+      explanation += `2. Stage 1 Binary Sum: ${stage1SumRow}\n`;
+      if (anyCorrection) {
+        explanation += `3. Condition Triggered: BCD sum > 9 or carry generated ➔ Add 0110 (6) to each invalid nibble.\n`;
+        explanation += `4. Stage 2 Corrected BCD: ${finalBcdStr}\n`;
+        explanation += `5. Decoded result digits: ${bracketDecStr.replace(/\s+/g, ' ')}\n`;
+      } else {
+        explanation += `3. All nibbles ≤ 9 with no carry out ➔ Direct valid BCD result.\n`;
+      }
+      document.getElementById('bcd-add-steps').textContent = explanation;
     }
 
     // Load preset from notebook
